@@ -12,15 +12,10 @@
 
 @class NXFetchedCollectionViewDataSource;
 
-typedef void(^NXFetchedCollectionViewDataSourcePostUpdateBlock)(NXFetchedCollectionViewDataSource *dataSource, NSDictionary *update);
-
 @interface NXFetchedCollectionViewDataSource : NXCollectionViewDataSource
 
 #pragma mark Life-cycle
 - (id)initWithFetchRequest:(NSFetchRequest *)fetchRequest sectionKeyPath:(NSString *)sectionKeyPath managedObjectContext:(NSManagedObjectContext *)managedObjectContext forCollectionView:(UICollectionView *)collectionView;
-
-#pragma mark Post Update
-@property (copy) NXFetchedCollectionViewDataSourcePostUpdateBlock postUpdateBlock;
 
 #pragma mark Core Data Properties
 @property (nonatomic, readonly) NSManagedObjectContext *managedObjectContext;

@@ -18,6 +18,6 @@
 @property (nonatomic, readonly) NSArray *sections;
 
 #pragma mark Reload
-- (BOOL)reloadWithSections:(NSArray *)sections sectionNames:(NSArray *)sectionNames;
+- (void)reloadWithSections:(NSArray *)sections sectionNames:(NSArray *)sectionNames;
 
 @end

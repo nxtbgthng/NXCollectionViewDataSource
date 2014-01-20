@@ -9,6 +9,9 @@
 #import "NXStaticCollectionViewDataSource.h"
 
 @interface NXStaticCollectionViewDataSource ()
+#pragma mark Static Content
+@property (nonatomic, readwrite, strong) NSArray *sectionNames;
+@property (nonatomic, readwrite, strong) NSArray *sections;
 @property (nonatomic, readonly) NSMutableDictionary *items;
 @end
 
@@ -20,15 +23,8 @@
 {
     self = [super initWithCollectionView:collectionView];
     if (self) {
-        _sections = sections;
-        _sectionNames = sectionNames;
-        
         _items = [[NSMutableDictionary alloc] init];
-        [_sections enumerateObjectsUsingBlock:^(NSArray *section, NSUInteger sectionIndex, BOOL *stop) {
-            [section enumerateObjectsUsingBlock:^(id item, NSUInteger itemIndex, BOOL *stop) {
-                [_items setObject:item forKey:[NSIndexPath indexPathForItem:itemIndex inSection:sectionIndex]];
-            }];
-        }];
+        [self reloadWithSections:sections sectionNames:sectionNames];
     }
     return self;
 }
@@ -55,6 +51,31 @@
 - (NSArray *)indexPathsOfItem:(id)item;
 {
     return [self.items allKeysForObject:item];
+}
+
+#pragma mark Getting Section Name
+
+- (NSString *)nameForSection:(NSUInteger)section
+{
+    return self.sectionNames[section];
+}
+
+#pragma mark Reload
+
+- (void)reloadWithSections:(NSArray *)sections sectionNames:(NSArray *)sectionNames
+{
+    self.sections = sections;
+    self.sectionNames = sectionNames;
+    
+    [self.items removeAllObjects];
+    
+    [self.sections enumerateObjectsUsingBlock:^(NSArray *section, NSUInteger sectionIndex, BOOL *stop) {
+        [section enumerateObjectsUsingBlock:^(id item, NSUInteger itemIndex, BOOL *stop) {
+            [self.items setObject:item forKey:[NSIndexPath indexPathForItem:itemIndex inSection:sectionIndex]];
+        }];
+    }];
+    
+    [self reload];
 }
 
 @end

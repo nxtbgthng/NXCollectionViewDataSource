@@ -76,6 +76,16 @@
     return @[];
 }
 
+#pragma mark Reload
+
+- (void)reload
+{
+    [self.collectionView reloadData];
+    if (self.postUpdateBlock) {
+        self.postUpdateBlock(self);
+    }
+}
+
 #pragma mark UICollectionViewDataSource
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView

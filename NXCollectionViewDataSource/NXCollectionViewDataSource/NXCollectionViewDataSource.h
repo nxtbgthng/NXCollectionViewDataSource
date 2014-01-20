@@ -12,6 +12,7 @@
 @class NXCollectionViewDataSource;
 
 typedef void(^NXCollectionViewDataSourcePrepareBlock)(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource);
+typedef void(^NXCollectionViewDataSourcePostUpdateBlock)(NXCollectionViewDataSource *dataSource);
 
 @interface NXCollectionViewDataSource : NSObject <UICollectionViewDataSource>
 
@@ -38,5 +39,8 @@ typedef void(^NXCollectionViewDataSourcePrepareBlock)(id view, NSIndexPath *inde
 
 #pragma mark Reload
 - (void)reload;
+
+#pragma mark Post Update
+@property (copy) NXCollectionViewDataSourcePostUpdateBlock postUpdateBlock;
 
 @end

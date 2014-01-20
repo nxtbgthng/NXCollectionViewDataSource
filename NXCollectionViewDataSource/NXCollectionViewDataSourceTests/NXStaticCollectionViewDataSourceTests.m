@@ -86,6 +86,19 @@
     XCTAssertEqualObjects([dataSource indexPathsOfItem:item], @[indexPath]);
 }
 
+- (void)testGettingSectionName
+{
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithSections:self.sections
+                                                                                                 sectionNames:self.sectionNames
+                                                                                            forCollectionView:collectionView];
+    
+    XCTAssertEqualObjects([dataSource nameForSection:0], @"Foo");
+    XCTAssertEqualObjects([dataSource nameForSection:1], @"Bar");
+    XCTAssertEqualObjects([dataSource nameForSection:2], @"Baz");
+}
+
 - (void)testGettingCellForItem
 {
     UICollectionView *collectionView = mock([UICollectionView class]);

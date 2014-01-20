@@ -80,4 +80,21 @@
     XCTAssertEqualObjects(dataSource.supplementaryViewReuseIdentifier[supplementaryViewKind], @"UIView");
 }
 
+- (void)testReloadAndPostUpdateBlock
+{
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    NXCollectionViewDataSource *dataSource = [[NXCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    
+    __block BOOL postUpdateBlockCalled = NO;
+    
+    dataSource.postUpdateBlock = ^(NXCollectionViewDataSource *dataSource){
+        postUpdateBlockCalled = YES;
+    };
+    
+    [dataSource reload];
+    
+    [verifyCount(collectionView, times(1)) reloadData];
+    XCTAssertTrue(postUpdateBlockCalled);
+}
+
 @end
