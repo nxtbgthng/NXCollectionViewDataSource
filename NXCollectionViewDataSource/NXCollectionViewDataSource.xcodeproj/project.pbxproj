@@ -64,6 +64,7 @@
 		F6C176B0188D5F9900F828AA /* NXFetchedCollectionViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NXFetchedCollectionViewDataSource.h; sourceTree = "<group>"; };
 		F6C176B1188D5F9900F828AA /* NXFetchedCollectionViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NXFetchedCollectionViewDataSource.m; sourceTree = "<group>"; };
 		F6C176B3188D655C00F828AA /* NXStaticCollectionViewDataSourceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NXStaticCollectionViewDataSourceTests.m; sourceTree = "<group>"; };
+		F6C176B5188D71FD00F828AA /* NXCollectionViewDataSource+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NXCollectionViewDataSource+Private.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +126,7 @@
 			isa = PBXGroup;
 			children = (
 				F6C17689188D5BA400F828AA /* NXCollectionViewDataSource.h */,
+				F6C176B5188D71FD00F828AA /* NXCollectionViewDataSource+Private.h */,
 				F6C1768B188D5BA400F828AA /* NXCollectionViewDataSource.m */,
 				F6C176AD188D5F8900F828AA /* NXStaticCollectionViewDataSource.h */,
 				F6C176AE188D5F8900F828AA /* NXStaticCollectionViewDataSource.m */,

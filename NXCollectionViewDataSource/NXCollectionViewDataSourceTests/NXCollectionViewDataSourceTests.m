@@ -12,6 +12,7 @@
 #import <XCTest/XCTest.h>
 
 #import "NXCollectionViewDataSource.h"
+#import "NXCollectionViewDataSource+Private.h"
 
 @interface NXCollectionViewDataSourceTests : XCTestCase
 
@@ -23,7 +24,7 @@
 
 - (void)testSetup
 {
-    UICollectionView *collectionView = mockClass([UICollectionView class]);
+    UICollectionView *collectionView = mock([UICollectionView class]);
     
     NXCollectionViewDataSource *dataSource = [[NXCollectionViewDataSource alloc] initWithCollectionView:collectionView];
     
@@ -33,12 +34,50 @@
 
 - (void)testGettingItemAndSectionMetrics
 {
-    UICollectionView *collectionView = mockClass([UICollectionView class]);
+    UICollectionView *collectionView = mock([UICollectionView class]);
     
     NXCollectionViewDataSource *dataSource = [[NXCollectionViewDataSource alloc] initWithCollectionView:collectionView];
     
     NSInteger numberOfSections = [dataSource numberOfSectionsInCollectionView:collectionView];
     XCTAssertEqual(numberOfSections, 0, @"The base data source should always be empty.");
+}
+
+- (void)testRegisterCellClass
+{
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    NXCollectionViewDataSource *dataSource = [[NXCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+
+    NXCollectionViewDataSourcePrepareBlock cellPrepareBlock = ^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {};
+    
+    [dataSource registerClass:[UICollectionViewCell class] withPrepareBlock:cellPrepareBlock];
+    
+    // The class should be registerd in the collection view.
+    [verifyCount(collectionView, times(1)) registerClass:[UICollectionViewCell class]
+                              forCellWithReuseIdentifier:@"UICollectionViewCell"];
+    
+    // The data source sould keep track of the prepare block and the reuse identifier.
+    XCTAssertEqual(dataSource.cellPrepareBlock, cellPrepareBlock);
+    XCTAssertEqualObjects(dataSource.cellReuseIdentifier, @"UICollectionViewCell");
+}
+
+- (void)testRegisterSupplementaryViewClasses
+{
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    NXCollectionViewDataSource *dataSource = [[NXCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    
+    NXCollectionViewDataSourcePrepareBlock supplementaryViewPrepareBlock = ^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {};
+    NSString *supplementaryViewKind = @"supplementaryViewKind";
+    
+    [dataSource registerClass:[UIView class] forSupplementaryViewOfKind:supplementaryViewKind withPrepareBlock:supplementaryViewPrepareBlock];
+    
+    // The class should be registerd in the collection view.
+    [verifyCount(collectionView, times(1)) registerClass:[UIView class]
+                              forSupplementaryViewOfKind:supplementaryViewKind
+                                     withReuseIdentifier:@"UIView"];
+    
+    // The data source sould keep track of the prepare block and the reuse identifier.
+    XCTAssertEqual((NXCollectionViewDataSourcePrepareBlock)dataSource.supplementaryViewPrepareBlock[supplementaryViewKind], supplementaryViewPrepareBlock);
+    XCTAssertEqualObjects(dataSource.supplementaryViewReuseIdentifier[supplementaryViewKind], @"UIView");
 }
 
 @end

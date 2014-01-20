@@ -37,7 +37,7 @@
 
 - (void)testSetup
 {
-    UICollectionView *collectionView = mockClass([UICollectionView class]);
+    UICollectionView *collectionView = mock([UICollectionView class]);
     
     NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithSections:self.sections
                                                                                                  sectionNames:self.sectionNames
@@ -51,7 +51,7 @@
 
 - (void)testGettingItemAndSectionMetrics
 {
-    UICollectionView *collectionView = mockClass([UICollectionView class]);
+    UICollectionView *collectionView = mock([UICollectionView class]);
     
     NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithSections:self.sections
                                                                                                  sectionNames:self.sectionNames
@@ -72,7 +72,7 @@
 
 - (void)testGettingItemsAndIndexPaths
 {
-    UICollectionView *collectionView = mockClass([UICollectionView class]);
+    UICollectionView *collectionView = mock([UICollectionView class]);
     
     NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithSections:self.sections
                                                                                                  sectionNames:self.sectionNames

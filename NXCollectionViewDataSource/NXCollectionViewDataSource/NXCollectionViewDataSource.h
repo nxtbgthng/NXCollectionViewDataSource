@@ -21,7 +21,7 @@ typedef void(^NXCollectionViewDataSourcePrepareBlock)(id view, NSIndexPath *inde
 #pragma mark Collection View
 @property (nonatomic, readonly, weak) UICollectionView *collectionView;
 
-#pragma mark Configure Collection View
+#pragma mark Register Cell and Supplementary View Classes
 - (void)registerClass:(Class)cellClass withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock;
 - (void)registerClass:(Class)viewClass forSupplementaryViewOfKind:(NSString *)elementKind withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock;
 
