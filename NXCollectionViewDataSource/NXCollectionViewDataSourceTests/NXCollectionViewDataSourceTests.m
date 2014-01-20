@@ -30,6 +30,8 @@
     
     XCTAssertNotNil(dataSource);
     XCTAssertEqual(dataSource.collectionView, collectionView);
+    
+    [verifyCount(collectionView, times(1)) setDataSource:(id)dataSource];
 }
 
 - (void)testGettingItemAndSectionMetrics

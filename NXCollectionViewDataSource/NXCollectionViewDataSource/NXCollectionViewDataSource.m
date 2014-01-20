@@ -28,6 +28,7 @@
     self = [super  init];
     if (self) {
         _collectionView = collectionView;
+        _collectionView.dataSource = self;
         
         _supplementaryViewReuseIdentifier = [[NSMutableDictionary alloc] init];
         _supplementaryViewPrepareBlock = [[NSMutableDictionary alloc] init];
