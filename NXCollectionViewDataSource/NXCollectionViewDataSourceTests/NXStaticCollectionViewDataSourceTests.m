@@ -49,4 +49,25 @@
     XCTAssertEqualObjects(dataSource.sectionNames, self.sectionNames);
 }
 
+- (void)testGettingItemAndSectionMetrics
+{
+    UICollectionView *collectionView = mockClass([UICollectionView class]);
+    
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithSections:self.sections
+                                                                                                 sectionNames:self.sectionNames
+                                                                                            forCollectionView:collectionView];
+    
+    NSInteger numberOfSections = [dataSource numberOfSectionsInCollectionView:collectionView];
+    XCTAssertEqual(numberOfSections, 3);
+    
+    NSInteger numberOfItemsInFirstSection = [dataSource collectionView:collectionView numberOfItemsInSection:0];
+    XCTAssertEqual(numberOfItemsInFirstSection, 3);
+    
+    NSInteger numberOfItemsInSecondSection = [dataSource collectionView:collectionView numberOfItemsInSection:1];
+    XCTAssertEqual(numberOfItemsInSecondSection, 3);
+    
+    NSInteger numberOfItemsInThirdSection = [dataSource collectionView:collectionView numberOfItemsInSection:2];
+    XCTAssertEqual(numberOfItemsInThirdSection, 3);
+}
+
 @end

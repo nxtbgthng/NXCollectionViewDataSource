@@ -21,4 +21,28 @@
     return self;
 }
 
+#pragma mark Getting Item and Section Metrics
+
+- (NSUInteger)numberOfSections
+{
+    return 0;
+}
+
+- (NSUInteger)numberOfItemsInSection:(NSUInteger)section
+{
+    return 0;
+}
+
+#pragma mark UICollectionViewDataSource
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    return [self numberOfSections];
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return [self numberOfItemsInSection:section];
+}
+
 @end

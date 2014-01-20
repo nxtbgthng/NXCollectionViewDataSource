@@ -31,4 +31,14 @@
     XCTAssertEqual(dataSource.collectionView, collectionView);
 }
 
+- (void)testGettingItemAndSectionMetrics
+{
+    UICollectionView *collectionView = mockClass([UICollectionView class]);
+    
+    NXCollectionViewDataSource *dataSource = [[NXCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    
+    NSInteger numberOfSections = [dataSource numberOfSectionsInCollectionView:collectionView];
+    XCTAssertEqual(numberOfSections, 0, @"The base data source should always be empty.");
+}
+
 @end

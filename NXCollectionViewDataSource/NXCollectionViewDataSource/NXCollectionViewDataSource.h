@@ -25,13 +25,15 @@ typedef void(^NXCollectionViewDataSourcePrepareBlock)(id view, NSIndexPath *inde
 - (void)registerClass:(Class)cellClass withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock;
 - (void)registerClass:(Class)viewClass forSupplementaryViewOfKind:(NSString *)elementKind withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock;
 
-#pragma mark Accessing Results
+#pragma mark Getting Item and Section Metrics
 - (NSUInteger)numberOfSections;
 - (NSUInteger)numberOfItemsInSection:(NSUInteger)section;
 
+#pragma mark Getting Items
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath;
 - (NSIndexPath *)indexPathOfItem:(id)item;
 
+#pragma mark Getting Section Name
 - (NSString *)nameForSection:(NSUInteger)section;
 
 #pragma mark Reload

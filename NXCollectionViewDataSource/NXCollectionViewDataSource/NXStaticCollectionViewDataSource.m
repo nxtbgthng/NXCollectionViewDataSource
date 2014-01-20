@@ -22,4 +22,16 @@
     return self;
 }
 
+#pragma mark Getting Item and Section Metrics
+
+- (NSUInteger)numberOfSections
+{
+    return [self.sections count];
+}
+
+- (NSUInteger)numberOfItemsInSection:(NSUInteger)section
+{
+    return [self.sections[section] count];
+}
+
 @end
