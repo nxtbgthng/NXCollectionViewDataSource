@@ -76,6 +76,13 @@
     return @[];
 }
 
+#pragma mark Getting Section Name
+
+- (NSString *)nameForSection:(NSUInteger)section
+{
+    return nil;
+}
+
 #pragma mark Reload
 
 - (void)reload
