@@ -8,6 +8,10 @@
 
 #import "NXStaticCollectionViewDataSource.h"
 
+@interface NXStaticCollectionViewDataSource ()
+@property (nonatomic, readonly) NSMutableDictionary *items;
+@end
+
 @implementation NXStaticCollectionViewDataSource
 
 #pragma mark Life-cycle
@@ -18,6 +22,13 @@
     if (self) {
         _sections = sections;
         _sectionNames = sectionNames;
+        
+        _items = [[NSMutableDictionary alloc] init];
+        [_sections enumerateObjectsUsingBlock:^(NSArray *section, NSUInteger sectionIndex, BOOL *stop) {
+            [section enumerateObjectsUsingBlock:^(id item, NSUInteger itemIndex, BOOL *stop) {
+                [_items setObject:item forKey:[NSIndexPath indexPathForItem:itemIndex inSection:sectionIndex]];
+            }];
+        }];
     }
     return self;
 }
@@ -32,6 +43,18 @@
 - (NSUInteger)numberOfItemsInSection:(NSUInteger)section
 {
     return [self.sections[section] count];
+}
+
+#pragma mark Getting Items and Index Paths
+
+- (id)itemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [self.items objectForKey:indexPath];
+}
+
+- (NSArray *)indexPathsOfItem:(id)item;
+{
+    return [self.items allKeysForObject:item];
 }
 
 @end

@@ -29,9 +29,9 @@ typedef void(^NXCollectionViewDataSourcePrepareBlock)(id view, NSIndexPath *inde
 - (NSUInteger)numberOfSections;
 - (NSUInteger)numberOfItemsInSection:(NSUInteger)section;
 
-#pragma mark Getting Items
+#pragma mark Getting Items and Index Paths
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath;
-- (NSIndexPath *)indexPathOfItem:(id)item;
+- (NSArray *)indexPathsOfItem:(id)item;
 
 #pragma mark Getting Section Name
 - (NSString *)nameForSection:(NSUInteger)section;

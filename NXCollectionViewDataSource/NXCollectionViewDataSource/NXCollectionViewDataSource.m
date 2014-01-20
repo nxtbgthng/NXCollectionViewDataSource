@@ -33,6 +33,18 @@
     return 0;
 }
 
+#pragma mark Getting Items and Index Paths
+
+- (id)itemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return nil;
+}
+
+- (NSArray *)indexPathsOfItem:(id)item;
+{
+    return @[];
+}
+
 #pragma mark UICollectionViewDataSource
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView

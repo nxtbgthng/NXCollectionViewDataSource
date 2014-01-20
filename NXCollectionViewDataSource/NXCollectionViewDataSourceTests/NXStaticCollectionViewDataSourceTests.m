@@ -70,4 +70,19 @@
     XCTAssertEqual(numberOfItemsInThirdSection, 3);
 }
 
+- (void)testGettingItemsAndIndexPaths
+{
+    UICollectionView *collectionView = mockClass([UICollectionView class]);
+    
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithSections:self.sections
+                                                                                                 sectionNames:self.sectionNames
+                                                                                            forCollectionView:collectionView];
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:2 inSection:1];
+    NSString *item = @"Bar_baz";
+    
+    XCTAssertEqualObjects([dataSource itemAtIndexPath:indexPath], item);
+    XCTAssertEqualObjects([dataSource indexPathsOfItem:item], @[indexPath]);
+}
+
 @end
