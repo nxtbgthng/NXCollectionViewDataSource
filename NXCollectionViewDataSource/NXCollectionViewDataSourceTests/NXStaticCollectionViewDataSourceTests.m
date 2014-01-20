@@ -159,4 +159,29 @@
     XCTAssertTrue(prepareBlockCalled);
 }
 
+- (void)testRelaodAndChangeContent
+{
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithSections:self.sections
+                                                                                                 sectionNames:self.sectionNames
+                                                                                            forCollectionView:collectionView];
+    XCTAssertEqual(dataSource.numberOfSections, (NSUInteger)3);
+    
+    [dataSource reloadWithSections:@[@[@"xxx"]] sectionNames:@[@"XXX"]];
+    
+    XCTAssertEqualObjects(dataSource.sections, @[@[@"xxx"]]);
+    XCTAssertEqualObjects(dataSource.sectionNames, @[@"XXX"]);
+    
+    XCTAssertEqual(dataSource.numberOfSections, (NSUInteger)1);
+    
+    XCTAssertEqualObjects([dataSource nameForSection:0], @"XXX");
+    
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+    NSString *item = @"xxx";
+    
+    XCTAssertEqualObjects([dataSource itemAtIndexPath:indexPath], item);
+    XCTAssertEqualObjects([dataSource indexPathsOfItem:item], @[indexPath]);
+}
+
 @end
