@@ -10,4 +10,15 @@
 
 @implementation NXCollectionViewDataSource
 
+#pragma mark Life-cycle
+
+- (id)initWithCollectionView:(UICollectionView *)collectionView;
+{
+    self = [super  init];
+    if (self) {
+        _collectionView = collectionView;
+    }
+    return self;
+}
+
 @end

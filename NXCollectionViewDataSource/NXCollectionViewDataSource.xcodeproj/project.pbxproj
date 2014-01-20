@@ -19,6 +19,7 @@
 		F6C176A1188D5BA400F828AA /* NXCollectionViewDataSourceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C176A0188D5BA400F828AA /* NXCollectionViewDataSourceTests.m */; };
 		F6C176AF188D5F8900F828AA /* NXStaticCollectionViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C176AE188D5F8900F828AA /* NXStaticCollectionViewDataSource.m */; };
 		F6C176B2188D5F9900F828AA /* NXFetchedCollectionViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C176B1188D5F9900F828AA /* NXFetchedCollectionViewDataSource.m */; };
+		F6C176B4188D655C00F828AA /* NXStaticCollectionViewDataSourceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C176B3188D655C00F828AA /* NXStaticCollectionViewDataSourceTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,7 @@
 		F6C176AE188D5F8900F828AA /* NXStaticCollectionViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NXStaticCollectionViewDataSource.m; sourceTree = "<group>"; };
 		F6C176B0188D5F9900F828AA /* NXFetchedCollectionViewDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NXFetchedCollectionViewDataSource.h; sourceTree = "<group>"; };
 		F6C176B1188D5F9900F828AA /* NXFetchedCollectionViewDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NXFetchedCollectionViewDataSource.m; sourceTree = "<group>"; };
+		F6C176B3188D655C00F828AA /* NXStaticCollectionViewDataSourceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NXStaticCollectionViewDataSourceTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				F6C176A0188D5BA400F828AA /* NXCollectionViewDataSourceTests.m */,
+				F6C176B3188D655C00F828AA /* NXStaticCollectionViewDataSourceTests.m */,
 				F6C1769B188D5BA400F828AA /* Supporting Files */,
 			);
 			path = NXCollectionViewDataSourceTests;
@@ -286,6 +289,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F6C176A1188D5BA400F828AA /* NXCollectionViewDataSourceTests.m in Sources */,
+				F6C176B4188D655C00F828AA /* NXStaticCollectionViewDataSourceTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

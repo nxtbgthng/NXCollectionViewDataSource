@@ -10,4 +10,16 @@
 
 @implementation NXStaticCollectionViewDataSource
 
+#pragma mark Life-cycle
+
+- (id)initWithSections:(NSArray *)sections sectionNames:(NSArray *)sectionNames forCollectionView:(UICollectionView *)collectionView
+{
+    self = [super initWithCollectionView:collectionView];
+    if (self) {
+        _sections = sections;
+        _sectionNames = sectionNames;
+    }
+    return self;
+}
+
 @end

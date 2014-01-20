@@ -6,7 +6,12 @@
 //  Copyright (c) 2014 nxtbgthng GmbH. All rights reserved.
 //
 
+#define MOCKITO_SHORTHAND
+#import <OCMockito/OCMockito.h>
+
 #import <XCTest/XCTest.h>
+
+#import "NXCollectionViewDataSource.h"
 
 @interface NXCollectionViewDataSourceTests : XCTestCase
 
@@ -14,21 +19,16 @@
 
 @implementation NXCollectionViewDataSourceTests
 
-- (void)setUp
-{
-    [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
-}
+#pragma mark Tests
 
-- (void)tearDown
+- (void)testSetup
 {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
-}
-
-- (void)testExample
-{
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+    UICollectionView *collectionView = mockClass([UICollectionView class]);
+    
+    NXCollectionViewDataSource *dataSource = [[NXCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    
+    XCTAssertNotNil(dataSource);
+    XCTAssertEqual(dataSource.collectionView, collectionView);
 }
 
 @end
