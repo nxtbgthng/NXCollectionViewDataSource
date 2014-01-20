@@ -88,6 +88,27 @@
     return [self numberOfItemsInSection:section];
 }
 
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:self.cellReuseIdentifier forIndexPath:indexPath];
+    if (cell && self.cellPrepareBlock) {
+        self.cellPrepareBlock(cell, indexPath, self);
+    }
+    return cell;
+}
+
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+    NSString *reuseIdentifier = self.supplementaryViewReuseIdentifier[kind];
+    NXCollectionViewDataSourcePrepareBlock prepareBlock = self.supplementaryViewPrepareBlock[kind];
+    
+    UICollectionReusableView *view = [self.collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
+    if (view && prepareBlock) {
+        prepareBlock(view, indexPath, self);
+    }
+    return view;
+}
+
 @end
 
 @implementation NXCollectionViewDataSource (Private)

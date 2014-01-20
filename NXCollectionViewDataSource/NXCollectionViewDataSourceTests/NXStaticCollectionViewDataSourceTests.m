@@ -15,6 +15,7 @@
 #import <XCTest/XCTest.h>
 
 #import "NXStaticCollectionViewDataSource.h"
+#import "NXCollectionViewDataSource+Private.h"
 
 @interface NXStaticCollectionViewDataSourceTests : XCTestCase
 @property (nonatomic, strong) NSArray *sectionNames;
@@ -83,6 +84,66 @@
     
     XCTAssertEqualObjects([dataSource itemAtIndexPath:indexPath], item);
     XCTAssertEqualObjects([dataSource indexPathsOfItem:item], @[indexPath]);
+}
+
+- (void)testGettingCellForItem
+{
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithSections:self.sections
+                                                                                                 sectionNames:self.sectionNames
+                                                                                            forCollectionView:collectionView];
+    
+    NSIndexPath *elementIndexPath = [NSIndexPath indexPathForItem:2 inSection:1];
+    UICollectionViewCell *elementCell = [[UICollectionViewCell alloc] initWithFrame:CGRectZero];
+    
+    __block BOOL prepareBlockCalled = NO;
+    
+    [dataSource registerClass:[UICollectionViewCell class]
+             withPrepareBlock:^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {
+                 XCTAssertEqualObjects(indexPath, elementIndexPath);
+                 XCTAssertEqual(view, elementCell);
+                 prepareBlockCalled = YES;
+    }];
+    
+    [given([collectionView dequeueReusableCellWithReuseIdentifier:dataSource.cellReuseIdentifier forIndexPath:elementIndexPath]) willReturn:elementCell];
+    
+    UICollectionViewCell *cell = [dataSource collectionView:collectionView cellForItemAtIndexPath:elementIndexPath];
+    XCTAssertNotNil(cell);
+    XCTAssertEqual(cell, elementCell);
+    
+    XCTAssertTrue(prepareBlockCalled);
+}
+
+- (void)testGettingSupplementaryView
+{
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithSections:self.sections
+                                                                                                 sectionNames:self.sectionNames
+                                                                                            forCollectionView:collectionView];
+    
+    NSString *elementKind = @"kind";
+    NSIndexPath *elementIndexPath = [NSIndexPath indexPathForItem:2 inSection:1];
+    UICollectionReusableView *elementView = [[UICollectionReusableView alloc] initWithFrame:CGRectZero];
+    
+    __block BOOL prepareBlockCalled = NO;
+    
+    [dataSource registerClass:[UICollectionReusableView class]
+   forSupplementaryViewOfKind:elementKind
+             withPrepareBlock:^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {
+                 XCTAssertEqualObjects(indexPath, elementIndexPath);
+                 XCTAssertEqual(view, elementView);
+                 prepareBlockCalled = YES;
+    }];
+    
+    [given([collectionView dequeueReusableSupplementaryViewOfKind:elementKind withReuseIdentifier:@"UICollectionReusableView" forIndexPath:elementIndexPath]) willReturn:elementView];
+    
+    UICollectionReusableView *view = [dataSource collectionView:collectionView viewForSupplementaryElementOfKind:elementKind atIndexPath:elementIndexPath];
+    XCTAssertNotNil(view);
+    XCTAssertEqual(view, elementView);
+    
+    XCTAssertTrue(prepareBlockCalled);
 }
 
 @end
