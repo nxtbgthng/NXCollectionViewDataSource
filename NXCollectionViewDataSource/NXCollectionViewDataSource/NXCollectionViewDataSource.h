@@ -7,7 +7,34 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
-@interface NXCollectionViewDataSource : NSObject
+@class NXCollectionViewDataSource;
+
+typedef void(^NXCollectionViewDataSourcePrepareBlock)(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource);
+
+@interface NXCollectionViewDataSource : NSObject <UICollectionViewDataSource>
+
+#pragma mark Life-cycle
+- (id)initWithCollectionView:(UICollectionView *)collectionView;
+
+#pragma mark Collection View
+@property (nonatomic, readonly, weak) UICollectionView *collectionView;
+
+#pragma mark Configure Collection View
+- (void)registerClass:(Class)cellClass withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock;
+- (void)registerClass:(Class)viewClass forSupplementaryViewOfKind:(NSString *)elementKind withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock;
+
+#pragma mark Accessing Results
+- (NSUInteger)numberOfSections;
+- (NSUInteger)numberOfItemsInSection:(NSUInteger)section;
+
+- (id)itemAtIndexPath:(NSIndexPath *)indexPath;
+- (NSIndexPath *)indexPathOfItem:(id)item;
+
+- (NSString *)nameForSection:(NSUInteger)section;
+
+#pragma mark Reload
+- (void)reload;
 
 @end
