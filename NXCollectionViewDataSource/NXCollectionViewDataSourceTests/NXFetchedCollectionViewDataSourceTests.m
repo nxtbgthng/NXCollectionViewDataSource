@@ -97,6 +97,29 @@
     XCTAssertEqual(numberOfItemsInFirstSection, 3);
 }
 
+- (void)testGettingItemsAndIndexPaths
+{
+    [self fillContextWithPersons];
+    
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    
+    NXFetchedCollectionViewDataSource *dataSource = [[NXFetchedCollectionViewDataSource alloc] initWithCollectionView:collectionView managedObjectContext:self.managedObjectContext];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Person"];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"age" ascending:YES]];
+    
+    [dataSource reloadWithFetchRequest:request sectionKeyPath:nil];
+    
+    Person *peter = [dataSource itemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+    XCTAssertEqualObjects(peter.name, @"Peter");
+    
+    Person *marry = [dataSource itemAtIndexPath:[NSIndexPath indexPathForItem:1 inSection:0]];
+    XCTAssertEqualObjects(marry.name, @"Marry");
+    
+    Person *paul = [dataSource itemAtIndexPath:[NSIndexPath indexPathForItem:2 inSection:0]];
+    XCTAssertEqualObjects(paul.name, @"Paul");
+}
+
 #pragma mark Fixtures
 
 - (void)fillContextWithPersons

@@ -45,19 +45,20 @@
 
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return nil;
+    return [self.fetchedResultsController objectAtIndexPath:indexPath];
 }
 
 - (NSArray *)indexPathsOfItem:(id)item;
 {
-    return @[];
+    return @[[self.fetchedResultsController indexPathForObject:item]];
 }
 
 #pragma mark Getting Section Name
 
 - (NSString *)nameForSection:(NSUInteger)section
 {
-    return nil;
+    id <NSFetchedResultsSectionInfo> sectionInfo = self.fetchedResultsController.sections[section];
+    return [sectionInfo name];
 }
 
 
