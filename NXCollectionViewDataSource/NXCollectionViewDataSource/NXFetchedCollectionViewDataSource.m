@@ -92,6 +92,8 @@
     NSError *error = nil;
     BOOL success = [self.fetchedResultsController performFetch:&error];
     
+    NSAssert(success, [error localizedDescription]);
+    
     [self reload];
 }
 

@@ -77,6 +77,18 @@
     XCTAssertNil(dataSource.sectionKeyPath);
 }
 
+- (void)testRelaodWithInvalidFetchRequest
+{
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    
+    NXFetchedCollectionViewDataSource *dataSource = [[NXFetchedCollectionViewDataSource alloc] initWithCollectionView:collectionView managedObjectContext:self.managedObjectContext];
+    XCTAssertNotNil(dataSource);
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Person"];
+    
+    XCTAssertThrowsSpecificNamed([dataSource reloadWithFetchRequest:request sectionKeyPath:nil], NSException, @"NSInvalidArgumentException");
+}
+
 - (void)testGettingItemAndSectionMetrics
 {
     [self fillContextWithPersons];
