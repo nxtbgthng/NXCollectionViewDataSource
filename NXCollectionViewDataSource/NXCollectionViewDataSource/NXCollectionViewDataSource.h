@@ -41,6 +41,8 @@ typedef void(^NXCollectionViewDataSourcePostUpdateBlock)(NXCollectionViewDataSou
     @param prepareBlock A Block which is called to prepare the cell. This block is called after the data source internaly dequeues the cell.
  */
 - (void)registerClass:(Class)cellClass withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock;
+- (void)registerNib:(UINib *)nib withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock;
+
 
 /*! Register a Class used to create supplementary views for the collection view.
  
@@ -49,6 +51,7 @@ typedef void(^NXCollectionViewDataSourcePostUpdateBlock)(NXCollectionViewDataSou
     @param prepareBlock A Block which is called to prepare the view. This block is called after the data source internaly dequeues the view.
  */
 - (void)registerClass:(Class)viewClass forSupplementaryViewOfKind:(NSString *)elementKind withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock;
+- (void)registerNib:(UINib *)nib forSupplementaryViewOfKind:(NSString *)elementKind withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock;
 
 #pragma mark Getting Item and Section Metrics
 - (NSUInteger)numberOfSections;

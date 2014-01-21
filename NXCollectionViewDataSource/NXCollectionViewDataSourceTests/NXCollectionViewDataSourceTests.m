@@ -55,11 +55,29 @@
     
     // The class should be registerd in the collection view.
     [verifyCount(collectionView, times(1)) registerClass:[UICollectionViewCell class]
-                              forCellWithReuseIdentifier:@"UICollectionViewCell"];
+                              forCellWithReuseIdentifier:NXCollectionViewDataSourceCellReuseIdentifier];
     
     // The data source sould keep track of the prepare block and the reuse identifier.
     XCTAssertEqual(dataSource.cellPrepareBlock, cellPrepareBlock);
-    XCTAssertEqualObjects(dataSource.cellReuseIdentifier, @"UICollectionViewCell");
+}
+
+- (void)testRegisterCellNib
+{
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    NXCollectionViewDataSource *dataSource = [[NXCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    
+    NXCollectionViewDataSourcePrepareBlock cellPrepareBlock = ^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {};
+    
+    UINib *nib = [[UINib alloc] init];
+    
+    [dataSource registerNib:nib withPrepareBlock:cellPrepareBlock];
+    
+    // The class should be registerd in the collection view.
+    [verifyCount(collectionView, times(1)) registerNib:nib
+                              forCellWithReuseIdentifier:NXCollectionViewDataSourceCellReuseIdentifier];
+    
+    // The data source sould keep track of the prepare block and the reuse identifier.
+    XCTAssertEqual(dataSource.cellPrepareBlock, cellPrepareBlock);
 }
 
 - (void)testRegisterSupplementaryViewClasses
@@ -75,12 +93,33 @@
     // The class should be registerd in the collection view.
     [verifyCount(collectionView, times(1)) registerClass:[UIView class]
                               forSupplementaryViewOfKind:supplementaryViewKind
-                                     withReuseIdentifier:@"UIView"];
+                                     withReuseIdentifier:supplementaryViewKind];
     
-    // The data source sould keep track of the prepare block and the reuse identifier.
+    // The data source sould keep track of the prepare block.
     XCTAssertEqual((NXCollectionViewDataSourcePrepareBlock)dataSource.supplementaryViewPrepareBlock[supplementaryViewKind], supplementaryViewPrepareBlock);
-    XCTAssertEqualObjects(dataSource.supplementaryViewReuseIdentifier[supplementaryViewKind], @"UIView");
 }
+
+- (void)testRegisterSupplementaryViewNib
+{
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    NXCollectionViewDataSource *dataSource = [[NXCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    
+    NXCollectionViewDataSourcePrepareBlock supplementaryViewPrepareBlock = ^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {};
+    NSString *supplementaryViewKind = @"supplementaryViewKind";
+    
+    UINib *nib = [[UINib alloc] init];
+    
+    [dataSource registerNib:nib forSupplementaryViewOfKind:supplementaryViewKind withPrepareBlock:supplementaryViewPrepareBlock];
+    
+    // The class should be registerd in the collection view.
+    [verifyCount(collectionView, times(1)) registerNib:nib
+                              forSupplementaryViewOfKind:supplementaryViewKind
+                                     withReuseIdentifier:supplementaryViewKind];
+    
+    // The data source sould keep track of the prepare block.
+    XCTAssertEqual((NXCollectionViewDataSourcePrepareBlock)dataSource.supplementaryViewPrepareBlock[supplementaryViewKind], supplementaryViewPrepareBlock);
+}
+
 
 - (void)testReloadAndPostUpdateBlock
 {

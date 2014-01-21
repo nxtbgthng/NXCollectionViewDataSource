@@ -135,7 +135,7 @@
                  prepareBlockCalled = YES;
     }];
     
-    [given([collectionView dequeueReusableCellWithReuseIdentifier:dataSource.cellReuseIdentifier forIndexPath:elementIndexPath]) willReturn:elementCell];
+    [given([collectionView dequeueReusableCellWithReuseIdentifier:NXCollectionViewDataSourceCellReuseIdentifier forIndexPath:elementIndexPath]) willReturn:elementCell];
     
     UICollectionViewCell *cell = [dataSource collectionView:collectionView cellForItemAtIndexPath:elementIndexPath];
     XCTAssertNotNil(cell);
@@ -165,7 +165,7 @@
                  prepareBlockCalled = YES;
     }];
     
-    [given([collectionView dequeueReusableSupplementaryViewOfKind:elementKind withReuseIdentifier:@"UICollectionReusableView" forIndexPath:elementIndexPath]) willReturn:elementView];
+    [given([collectionView dequeueReusableSupplementaryViewOfKind:elementKind withReuseIdentifier:elementKind forIndexPath:elementIndexPath]) willReturn:elementView];
     
     UICollectionReusableView *view = [dataSource collectionView:collectionView viewForSupplementaryElementOfKind:elementKind atIndexPath:elementIndexPath];
     XCTAssertNotNil(view);

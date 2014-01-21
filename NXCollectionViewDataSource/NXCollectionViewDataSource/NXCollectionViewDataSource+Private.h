@@ -8,14 +8,12 @@
 
 #import "NXCollectionViewDataSource.h"
 
+extern NSString * const NXCollectionViewDataSourceCellReuseIdentifier;
+
 @interface NXCollectionViewDataSource (Private)
 
-#pragma mark Collection View Cells
-@property (nonatomic, readonly) NSString *cellReuseIdentifier;
+#pragma mark Cells & Supplementary View Prepare Block
 @property (nonatomic, readonly) NXCollectionViewDataSourcePrepareBlock cellPrepareBlock;
-
-#pragma mark Collection View Supplementary View
-@property (nonatomic, readonly) NSMutableDictionary *supplementaryViewReuseIdentifier;
 @property (nonatomic, readonly) NSMutableDictionary *supplementaryViewPrepareBlock;
 
 @end

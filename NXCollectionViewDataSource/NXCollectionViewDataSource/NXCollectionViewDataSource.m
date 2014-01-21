@@ -9,13 +9,12 @@
 #import "NXCollectionViewDataSource.h"
 #import "NXCollectionViewDataSource+Private.h"
 
+NSString * const NXCollectionViewDataSourceCellReuseIdentifier = @"NXCollectionViewDataSourceCellReuseIdentifier";
+
 @interface NXCollectionViewDataSource ()
-#pragma mark Collection View Cells
-@property (nonatomic, readwrite, strong) NSString *cellReuseIdentifier;
 @property (nonatomic, readwrite, strong) NXCollectionViewDataSourcePrepareBlock cellPrepareBlock;
 
 #pragma mark Collection View Supplementary View
-@property (nonatomic, readonly) NSMutableDictionary *supplementaryViewReuseIdentifier;
 @property (nonatomic, readonly) NSMutableDictionary *supplementaryViewPrepareBlock;
 @end
 
@@ -30,7 +29,6 @@
         _collectionView = collectionView;
         _collectionView.dataSource = self;
         
-        _supplementaryViewReuseIdentifier = [[NSMutableDictionary alloc] init];
         _supplementaryViewPrepareBlock = [[NSMutableDictionary alloc] init];
     }
     return self;
@@ -40,17 +38,28 @@
 
 - (void)registerClass:(Class)cellClass withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock
 {
-    self.cellReuseIdentifier = NSStringFromClass(cellClass);
     self.cellPrepareBlock = prepareBlock;
-    [self.collectionView registerClass:cellClass forCellWithReuseIdentifier:self.cellReuseIdentifier];
+    [self.collectionView registerClass:cellClass forCellWithReuseIdentifier:NXCollectionViewDataSourceCellReuseIdentifier];
+}
+
+- (void)registerNib:(UINib *)nib withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock
+{
+    self.cellPrepareBlock = prepareBlock;
+    [self.collectionView registerNib:nib forCellWithReuseIdentifier:NXCollectionViewDataSourceCellReuseIdentifier];
 }
 
 - (void)registerClass:(Class)viewClass forSupplementaryViewOfKind:(NSString *)elementKind withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock
 {
-    NSString *reuseIdentifier = NSStringFromClass(viewClass);
-    self.supplementaryViewReuseIdentifier[elementKind] = reuseIdentifier;
+    NSString *reuseIdentifier = elementKind;
     self.supplementaryViewPrepareBlock[elementKind] = prepareBlock;
     [self.collectionView registerClass:viewClass forSupplementaryViewOfKind:elementKind withReuseIdentifier:reuseIdentifier];
+}
+
+- (void)registerNib:(UINib *)nib forSupplementaryViewOfKind:(NSString *)elementKind withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock
+{
+    NSString *reuseIdentifier = elementKind;
+    self.supplementaryViewPrepareBlock[elementKind] = prepareBlock;
+    [self.collectionView registerNib:nib forSupplementaryViewOfKind:elementKind withReuseIdentifier:reuseIdentifier];
 }
 
 #pragma mark Getting Item and Section Metrics
@@ -117,7 +126,7 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if (collectionView == self.collectionView) {
-        UICollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:self.cellReuseIdentifier forIndexPath:indexPath];
+        UICollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:NXCollectionViewDataSourceCellReuseIdentifier forIndexPath:indexPath];
         if (cell && self.cellPrepareBlock) {
             self.cellPrepareBlock(cell, indexPath, self);
         }
@@ -127,13 +136,12 @@
     }
 }
 
-- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+- (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath
 {
     if (collectionView == self.collectionView) {
-        NSString *reuseIdentifier = self.supplementaryViewReuseIdentifier[kind];
-        NXCollectionViewDataSourcePrepareBlock prepareBlock = self.supplementaryViewPrepareBlock[kind];
+        NXCollectionViewDataSourcePrepareBlock prepareBlock = self.supplementaryViewPrepareBlock[elementKind];
         
-        UICollectionReusableView *view = [self.collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
+        UICollectionReusableView *view = [self.collectionView dequeueReusableSupplementaryViewOfKind:elementKind withReuseIdentifier:elementKind forIndexPath:indexPath];
         if (view && prepareBlock) {
             prepareBlock(view, indexPath, self);
         }
