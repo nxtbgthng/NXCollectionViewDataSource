@@ -8,7 +8,7 @@
 
 #import "NXFetchedCollectionViewDataSource.h"
 
-@interface NXFetchedCollectionViewDataSource ()
+@interface NXFetchedCollectionViewDataSource () <NSFetchedResultsControllerDelegate>
 #pragma mark Core Data Properties
 @property (nonatomic, readwrite, strong) NSFetchRequest *fetchRequest;
 @property (nonatomic, readwrite, strong) NSString *sectionKeyPath;
@@ -73,11 +73,36 @@
                                                                         managedObjectContext:self.managedObjectContext
                                                                           sectionNameKeyPath:self.sectionKeyPath
                                                                                    cacheName:nil];
+    self.fetchedResultsController.delegate = self;
     
     NSError *error = nil;
     BOOL success = [self.fetchedResultsController performFetch:&error];
     
     [self reload];
+}
+
+#pragma mark NSFetchedResultsControllerDelegate
+
+- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
+{
+    
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo atIndex:(NSUInteger)sectionIndex forChangeType:(NSFetchedResultsChangeType)type
+{
+    
+}
+
+- (void)controller:(NSFetchedResultsController *)controller didChangeObject:(id)anObject atIndexPath:(NSIndexPath *)indexPath forChangeType:(NSFetchedResultsChangeType)type newIndexPath:(NSIndexPath *)newIndexPath
+{
+    
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    if (self.postUpdateBlock) {
+        self.postUpdateBlock(self);
+    }
 }
 
 @end

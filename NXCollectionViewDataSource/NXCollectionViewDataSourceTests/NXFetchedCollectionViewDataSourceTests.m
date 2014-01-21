@@ -160,6 +160,31 @@
     XCTAssertEqualObjects([dataSource nameForSection:1], @"P");
 }
 
+- (void)testUpdatingItems
+{
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    
+    NXFetchedCollectionViewDataSource *dataSource = [[NXFetchedCollectionViewDataSource alloc] initWithCollectionView:collectionView managedObjectContext:self.managedObjectContext];
+    
+    __block NSInteger numberOfTimesPostUpdateBlockHasBeenCalled = 0;
+    dataSource.postUpdateBlock = ^(NXCollectionViewDataSource *dataSource){ numberOfTimesPostUpdateBlockHasBeenCalled++; };
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Person"];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"age" ascending:YES]];
+    
+    [dataSource reloadWithFetchRequest:request sectionKeyPath:nil];
+    XCTAssertEqual(numberOfTimesPostUpdateBlockHasBeenCalled, (NSInteger)1);
+    
+    XCTAssertEqual([dataSource numberOfSections], (NSUInteger)1);
+    XCTAssertEqual([dataSource numberOfItemsInSection:0], (NSUInteger)0);
+    
+    [self fillContextWithPersons];
+    XCTAssertEqual(numberOfTimesPostUpdateBlockHasBeenCalled, (NSInteger)2);
+    
+    XCTAssertEqual([dataSource numberOfSections], (NSUInteger)1);
+    XCTAssertEqual([dataSource numberOfItemsInSection:0], (NSUInteger)3);
+}
+
 #pragma mark Fixtures
 
 - (void)fillContextWithPersons
