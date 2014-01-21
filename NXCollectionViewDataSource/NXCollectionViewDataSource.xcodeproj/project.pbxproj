@@ -11,6 +11,7 @@
 		F631F042188E790D00F40B67 /* NXFetchedCollectionViewDataSourceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = F631F041188E790D00F40B67 /* NXFetchedCollectionViewDataSourceTests.m */; };
 		F631F046188E79DC00F40B67 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F631F044188E79DC00F40B67 /* Model.xcdatamodeld */; };
 		F631F049188E7A3600F40B67 /* Person.m in Sources */ = {isa = PBXBuildFile; fileRef = F631F048188E7A3600F40B67 /* Person.m */; };
+		F631F054188E99AC00F40B67 /* NXFetchedCollectionViewDataSourceTests-CollectionViewUpdates.m in Sources */ = {isa = PBXBuildFile; fileRef = F631F053188E99AC00F40B67 /* NXFetchedCollectionViewDataSourceTests-CollectionViewUpdates.m */; };
 		F6C17685188D5BA400F828AA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6C17684188D5BA400F828AA /* Foundation.framework */; };
 		F6C1768A188D5BA400F828AA /* NXCollectionViewDataSource.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = F6C17689188D5BA400F828AA /* NXCollectionViewDataSource.h */; };
 		F6C1768C188D5BA400F828AA /* NXCollectionViewDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F6C1768B188D5BA400F828AA /* NXCollectionViewDataSource.m */; };
@@ -55,6 +56,7 @@
 		F631F045188E79DC00F40B67 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		F631F047188E7A3600F40B67 /* Person.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Person.h; sourceTree = "<group>"; };
 		F631F048188E7A3600F40B67 /* Person.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Person.m; sourceTree = "<group>"; };
+		F631F053188E99AC00F40B67 /* NXFetchedCollectionViewDataSourceTests-CollectionViewUpdates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NXFetchedCollectionViewDataSourceTests-CollectionViewUpdates.m"; sourceTree = "<group>"; };
 		F6C17681188D5BA400F828AA /* libNXCollectionViewDataSource.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNXCollectionViewDataSource.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6C17684188D5BA400F828AA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		F6C17688188D5BA400F828AA /* NXCollectionViewDataSource-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NXCollectionViewDataSource-Prefix.pch"; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 				F6C176A0188D5BA400F828AA /* NXCollectionViewDataSourceTests.m */,
 				F6C176B3188D655C00F828AA /* NXStaticCollectionViewDataSourceTests.m */,
 				F631F041188E790D00F40B67 /* NXFetchedCollectionViewDataSourceTests.m */,
+				F631F053188E99AC00F40B67 /* NXFetchedCollectionViewDataSourceTests-CollectionViewUpdates.m */,
 				F631F043188E79C500F40B67 /* Test Model */,
 				F6C1769B188D5BA400F828AA /* Supporting Files */,
 			);
@@ -312,6 +315,7 @@
 				F6C176A1188D5BA400F828AA /* NXCollectionViewDataSourceTests.m in Sources */,
 				F6C176B4188D655C00F828AA /* NXStaticCollectionViewDataSourceTests.m in Sources */,
 				F631F049188E7A3600F40B67 /* Person.m in Sources */,
+				F631F054188E99AC00F40B67 /* NXFetchedCollectionViewDataSourceTests-CollectionViewUpdates.m in Sources */,
 				F631F042188E790D00F40B67 /* NXFetchedCollectionViewDataSourceTests.m in Sources */,
 				F631F046188E79DC00F40B67 /* Model.xcdatamodeld in Sources */,
 			);
