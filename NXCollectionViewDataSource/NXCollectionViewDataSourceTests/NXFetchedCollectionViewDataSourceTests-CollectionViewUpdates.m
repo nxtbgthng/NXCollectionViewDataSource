@@ -74,7 +74,59 @@
     XCTAssertEqual([collectionView numberOfItemsInSection:0], (NSInteger)3);
 }
 
+- (void)testUpdateCollectionViewWithSections
+{
+    UIWindow *window = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, 1024, 768)];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:window.bounds collectionViewLayout:[[UICollectionViewFlowLayout alloc] init]];
+    [window addSubview:collectionView];
+    
+    NXFetchedCollectionViewDataSource *dataSource = [[NXFetchedCollectionViewDataSource alloc] initWithCollectionView:collectionView managedObjectContext:self.managedObjectContext];
+    [dataSource registerClass:[UICollectionViewCell class] withPrepareBlock:^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {}];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Person"];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]];
+    
+    [dataSource reloadWithFetchRequest:request sectionKeyPath:@"uppercaseFirstLetterOfName"];
+    
+    XCTAssertEqual([collectionView numberOfSections], (NSInteger)0);
+    
+    // Insert Person for the first Section 'P'
+    [self insertPersonWithName:@"Peter" age:23];
+    
+    XCTAssertEqual([collectionView numberOfSections], (NSInteger)1);
+    XCTAssertEqual([collectionView numberOfItemsInSection:0], (NSInteger)1);
+    
+    // Insert Person for the second Section 'M'
+    [self insertPersonWithName:@"Marry" age:27];
+    
+    XCTAssertEqual([collectionView numberOfSections], (NSInteger)2);
+    XCTAssertEqual([collectionView numberOfItemsInSection:0], (NSInteger)1);
+    XCTAssertEqual([collectionView numberOfItemsInSection:1], (NSInteger)1);
+    
+    // Insert Person for the second Section 'P'
+    [self insertPersonWithName:@"Paul" age:35];
+    
+    XCTAssertEqual([collectionView numberOfSections], (NSInteger)2);
+    XCTAssertEqual([collectionView numberOfItemsInSection:0], (NSInteger)1);
+    XCTAssertEqual([collectionView numberOfItemsInSection:1], (NSInteger)2);
+}
+
 #pragma mark Fixtures
+
+- (Person *)insertPersonWithName:(NSString *)name age:(NSInteger)age
+{
+    NSEntityDescription *entityDescription = [[self.managedObjectModel entitiesByName] valueForKey:@"Person"];
+    
+    Person *person = [[Person alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:self.managedObjectContext];
+    person.name = name;
+    person.age = age;
+    
+    NSError *error = nil;
+    BOOL success = [self.managedObjectContext save:&error];
+    NSAssert(success, [error localizedDescription]);
+    
+    return person;
+}
 
 - (void)fillContextWithPersons
 {
