@@ -181,14 +181,14 @@
     NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithCollectionView:collectionView];
     [dataSource reloadWithSections:self.sections sectionNames:self.sectionNames];
     
-    XCTAssertEqual(dataSource.numberOfSections, (NSUInteger)3);
+    XCTAssertEqual(dataSource.numberOfSections, (NSInteger)3);
     
     [dataSource reloadWithSections:@[@[@"xxx"]] sectionNames:@[@"XXX"]];
     
     XCTAssertEqualObjects(dataSource.sections, @[@[@"xxx"]]);
     XCTAssertEqualObjects(dataSource.sectionNames, @[@"XXX"]);
     
-    XCTAssertEqual(dataSource.numberOfSections, (NSUInteger)1);
+    XCTAssertEqual(dataSource.numberOfSections, (NSInteger)1);
     
     XCTAssertEqualObjects([dataSource nameForSection:0], @"XXX");
     
