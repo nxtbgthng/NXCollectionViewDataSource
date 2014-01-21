@@ -62,4 +62,62 @@
     XCTAssertEqual(dataSource.managedObjectContext, self.managedObjectContext);
 }
 
+- (void)testRelaodWithFetchRequest
+{
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    
+    NXFetchedCollectionViewDataSource *dataSource = [[NXFetchedCollectionViewDataSource alloc] initWithCollectionView:collectionView managedObjectContext:self.managedObjectContext];
+    XCTAssertNotNil(dataSource);
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Person"];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"age" ascending:YES]];
+    
+    XCTAssertNoThrow([dataSource reloadWithFetchRequest:request sectionKeyPath:nil]);
+    XCTAssertEqualObjects(dataSource.fetchRequest, request);
+    XCTAssertNil(dataSource.sectionKeyPath);
+}
+
+- (void)testGettingItemAndSectionMetrics
+{
+    [self fillContextWithPersons];
+    
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    
+    NXFetchedCollectionViewDataSource *dataSource = [[NXFetchedCollectionViewDataSource alloc] initWithCollectionView:collectionView managedObjectContext:self.managedObjectContext];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Person"];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"age" ascending:YES]];
+    
+    [dataSource reloadWithFetchRequest:request sectionKeyPath:nil];
+    
+    NSInteger numberOfSections = [dataSource numberOfSectionsInCollectionView:collectionView];
+    XCTAssertEqual(numberOfSections, 1);
+    
+    NSInteger numberOfItemsInFirstSection = [dataSource collectionView:collectionView numberOfItemsInSection:0];
+    XCTAssertEqual(numberOfItemsInFirstSection, 3);
+}
+
+#pragma mark Fixtures
+
+- (void)fillContextWithPersons
+{
+    NSEntityDescription *entityDescription = [[self.managedObjectModel entitiesByName] valueForKey:@"Person"];
+    
+    Person *peter = [[Person alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:self.managedObjectContext];
+    peter.name = @"Peter";
+    peter.age = 23;
+    
+    Person *paul = [[Person alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:self.managedObjectContext];
+    paul.name = @"Paul";
+    paul.age = 35;
+    
+    Person *marry = [[Person alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:self.managedObjectContext];
+    marry.name = @"Marry";
+    marry.age = 27;
+    
+    NSError *error = nil;
+    BOOL success = [self.managedObjectContext save:&error];
+    NSAssert(success, [error localizedDescription]);
+}
+
 @end
