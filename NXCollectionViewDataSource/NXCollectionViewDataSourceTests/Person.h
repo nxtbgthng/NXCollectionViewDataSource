@@ -12,7 +12,9 @@
 
 @interface Person : NSManagedObject
 
-@property (nonatomic, retain) NSString * name;
+@property (nonatomic, retain) NSString *name;
 @property (nonatomic) int32_t age;
+
+@property (nonatomic, readonly) NSString *uppercaseFirstLetterOfName;
 
 @end

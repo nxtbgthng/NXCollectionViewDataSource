@@ -97,6 +97,26 @@
     XCTAssertEqual(numberOfItemsInFirstSection, 3);
 }
 
+- (void)testGettingItemAndSectionMetricsWithSectionKeyPath
+{
+    [self fillContextWithPersons];
+    
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    
+    NXFetchedCollectionViewDataSource *dataSource = [[NXFetchedCollectionViewDataSource alloc] initWithCollectionView:collectionView managedObjectContext:self.managedObjectContext];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Person"];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]];
+    
+    [dataSource reloadWithFetchRequest:request sectionKeyPath:@"uppercaseFirstLetterOfName"];
+    
+    NSInteger numberOfSections = [dataSource numberOfSectionsInCollectionView:collectionView];
+    XCTAssertEqual(numberOfSections, 2);
+    
+    XCTAssertEqual([dataSource collectionView:collectionView numberOfItemsInSection:0], 1);
+    XCTAssertEqual([dataSource collectionView:collectionView numberOfItemsInSection:1], 2);
+}
+
 - (void)testGettingItemsAndIndexPaths
 {
     [self fillContextWithPersons];
@@ -118,6 +138,26 @@
     
     Person *paul = [dataSource itemAtIndexPath:[NSIndexPath indexPathForItem:2 inSection:0]];
     XCTAssertEqualObjects(paul.name, @"Paul");
+}
+
+- (void)testGettingSectionName
+{
+    [self fillContextWithPersons];
+    
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    
+    NXFetchedCollectionViewDataSource *dataSource = [[NXFetchedCollectionViewDataSource alloc] initWithCollectionView:collectionView managedObjectContext:self.managedObjectContext];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Person"];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES]];
+    
+    [dataSource reloadWithFetchRequest:request sectionKeyPath:@"uppercaseFirstLetterOfName"];
+    
+    NSInteger numberOfSections = [dataSource numberOfSectionsInCollectionView:collectionView];
+    XCTAssertEqual(numberOfSections, 2);
+    
+    XCTAssertEqualObjects([dataSource nameForSection:0], @"M");
+    XCTAssertEqualObjects([dataSource nameForSection:1], @"P");
 }
 
 #pragma mark Fixtures
