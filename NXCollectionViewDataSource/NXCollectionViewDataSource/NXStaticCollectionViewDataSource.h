@@ -10,9 +10,6 @@
 
 @interface NXStaticCollectionViewDataSource : NXCollectionViewDataSource
 
-#pragma mark Life-cycle
-- (id)initWithSections:(NSArray *)sections sectionNames:(NSArray *)sectionNames forCollectionView:(UICollectionView *)collectionView;
-
 #pragma mark Static Content
 @property (nonatomic, readonly) NSArray *sectionNames;
 @property (nonatomic, readonly) NSArray *sections;

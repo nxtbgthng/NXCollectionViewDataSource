@@ -19,12 +19,13 @@
 
 #pragma mark Life-cycle
 
-- (id)initWithSections:(NSArray *)sections sectionNames:(NSArray *)sectionNames forCollectionView:(UICollectionView *)collectionView
+- (id)initWithCollectionView:(UICollectionView *)collectionView
 {
     self = [super initWithCollectionView:collectionView];
     if (self) {
+        _sections = @[];
+        _sectionNames = @[];
         _items = [[NSMutableDictionary alloc] init];
-        [self reloadWithSections:sections sectionNames:sectionNames];
     }
     return self;
 }

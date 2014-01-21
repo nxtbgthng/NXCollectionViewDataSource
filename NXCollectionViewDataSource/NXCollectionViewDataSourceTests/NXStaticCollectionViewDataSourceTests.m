@@ -40,9 +40,8 @@
 {
     UICollectionView *collectionView = mock([UICollectionView class]);
     
-    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithSections:self.sections
-                                                                                                 sectionNames:self.sectionNames
-                                                                                            forCollectionView:collectionView];
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    [dataSource reloadWithSections:self.sections sectionNames:self.sectionNames];
     
     XCTAssertNotNil(dataSource);
     
@@ -50,13 +49,22 @@
     XCTAssertEqualObjects(dataSource.sectionNames, self.sectionNames);
 }
 
+- (void)testGettingItemAndSectionMetricsWithoutReload
+{
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    
+    NSInteger numberOfSections = [dataSource numberOfSectionsInCollectionView:collectionView];
+    XCTAssertEqual(numberOfSections, 0);
+}
+
 - (void)testGettingItemAndSectionMetrics
 {
     UICollectionView *collectionView = mock([UICollectionView class]);
     
-    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithSections:self.sections
-                                                                                                 sectionNames:self.sectionNames
-                                                                                            forCollectionView:collectionView];
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    [dataSource reloadWithSections:self.sections sectionNames:self.sectionNames];
     
     NSInteger numberOfSections = [dataSource numberOfSectionsInCollectionView:collectionView];
     XCTAssertEqual(numberOfSections, 3);
@@ -75,9 +83,8 @@
 {
     UICollectionView *collectionView = mock([UICollectionView class]);
     
-    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithSections:self.sections
-                                                                                                 sectionNames:self.sectionNames
-                                                                                            forCollectionView:collectionView];
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    [dataSource reloadWithSections:self.sections sectionNames:self.sectionNames];
     
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:2 inSection:1];
     NSString *item = @"Bar_baz";
@@ -90,9 +97,8 @@
 {
     UICollectionView *collectionView = mock([UICollectionView class]);
     
-    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithSections:self.sections
-                                                                                                 sectionNames:self.sectionNames
-                                                                                            forCollectionView:collectionView];
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    [dataSource reloadWithSections:self.sections sectionNames:self.sectionNames];
     
     XCTAssertEqualObjects([dataSource nameForSection:0], @"Foo");
     XCTAssertEqualObjects([dataSource nameForSection:1], @"Bar");
@@ -103,9 +109,8 @@
 {
     UICollectionView *collectionView = mock([UICollectionView class]);
     
-    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithSections:self.sections
-                                                                                                 sectionNames:self.sectionNames
-                                                                                            forCollectionView:collectionView];
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    [dataSource reloadWithSections:self.sections sectionNames:self.sectionNames];
     
     NSIndexPath *elementIndexPath = [NSIndexPath indexPathForItem:2 inSection:1];
     UICollectionViewCell *elementCell = [[UICollectionViewCell alloc] initWithFrame:CGRectZero];
@@ -132,9 +137,8 @@
 {
     UICollectionView *collectionView = mock([UICollectionView class]);
     
-    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithSections:self.sections
-                                                                                                 sectionNames:self.sectionNames
-                                                                                            forCollectionView:collectionView];
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    [dataSource reloadWithSections:self.sections sectionNames:self.sectionNames];
     
     NSString *elementKind = @"kind";
     NSIndexPath *elementIndexPath = [NSIndexPath indexPathForItem:2 inSection:1];
@@ -163,9 +167,9 @@
 {
     UICollectionView *collectionView = mock([UICollectionView class]);
     
-    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithSections:self.sections
-                                                                                                 sectionNames:self.sectionNames
-                                                                                            forCollectionView:collectionView];
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    [dataSource reloadWithSections:self.sections sectionNames:self.sectionNames];
+    
     XCTAssertEqual(dataSource.numberOfSections, (NSUInteger)3);
     
     [dataSource reloadWithSections:@[@[@"xxx"]] sectionNames:@[@"XXX"]];
