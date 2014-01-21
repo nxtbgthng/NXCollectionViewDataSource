@@ -98,33 +98,49 @@
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    return [self numberOfSections];
+    if (collectionView == self.collectionView) {
+        return [self numberOfSections];
+    } else {
+        return 0;
+    }
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return [self numberOfItemsInSection:section];
+    if (collectionView == self.collectionView) {
+        return [self numberOfItemsInSection:section];
+    } else {
+        return 0;
+    }
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:self.cellReuseIdentifier forIndexPath:indexPath];
-    if (cell && self.cellPrepareBlock) {
-        self.cellPrepareBlock(cell, indexPath, self);
+    if (collectionView == self.collectionView) {
+        UICollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:self.cellReuseIdentifier forIndexPath:indexPath];
+        if (cell && self.cellPrepareBlock) {
+            self.cellPrepareBlock(cell, indexPath, self);
+        }
+        return cell;
+    } else {
+        return nil;
     }
-    return cell;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *reuseIdentifier = self.supplementaryViewReuseIdentifier[kind];
-    NXCollectionViewDataSourcePrepareBlock prepareBlock = self.supplementaryViewPrepareBlock[kind];
-    
-    UICollectionReusableView *view = [self.collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
-    if (view && prepareBlock) {
-        prepareBlock(view, indexPath, self);
+    if (collectionView == self.collectionView) {
+        NSString *reuseIdentifier = self.supplementaryViewReuseIdentifier[kind];
+        NXCollectionViewDataSourcePrepareBlock prepareBlock = self.supplementaryViewPrepareBlock[kind];
+        
+        UICollectionReusableView *view = [self.collectionView dequeueReusableSupplementaryViewOfKind:kind withReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
+        if (view && prepareBlock) {
+            prepareBlock(view, indexPath, self);
+        }
+        return view;
+    } else {
+        return nil;
     }
-    return view;
 }
 
 @end

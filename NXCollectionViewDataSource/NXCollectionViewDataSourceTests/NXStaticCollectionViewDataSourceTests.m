@@ -79,6 +79,17 @@
     XCTAssertEqual(numberOfItemsInThirdSection, 3);
 }
 
+- (void)testGettingItemAndSectionMetricsWithWrongCollectionView
+{
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    [dataSource reloadWithSections:self.sections sectionNames:self.sectionNames];
+    
+    XCTAssertEqual([dataSource numberOfSectionsInCollectionView:collectionView], 3);
+    XCTAssertEqual([dataSource numberOfSectionsInCollectionView:mock([UICollectionView class])], 0);
+}
+
 - (void)testGettingItemsAndIndexPaths
 {
     UICollectionView *collectionView = mock([UICollectionView class]);
