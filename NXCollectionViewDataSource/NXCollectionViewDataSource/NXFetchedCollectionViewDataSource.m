@@ -10,4 +10,22 @@
 
 @implementation NXFetchedCollectionViewDataSource
 
+#pragma mark Life-cycle
+
+- (id)initWithCollectionView:(UICollectionView *)collectionView managedObjectContext:(NSManagedObjectContext *)managedObjectContext
+{
+    self = [super initWithCollectionView:collectionView];
+    if (self) {
+        _managedObjectContext = managedObjectContext;
+    }
+    return self;
+}
+
+#pragma mark Reload
+
+- (void)reloadWithFetchRequest:(NSFetchRequest *)fetchRequest sectionKeyPath:(NSString *)sectionKeyPath
+{
+    [self reload];
+}
+
 @end

@@ -15,7 +15,7 @@
 @interface NXFetchedCollectionViewDataSource : NXCollectionViewDataSource
 
 #pragma mark Life-cycle
-- (id)initWithFetchRequest:(NSFetchRequest *)fetchRequest sectionKeyPath:(NSString *)sectionKeyPath managedObjectContext:(NSManagedObjectContext *)managedObjectContext forCollectionView:(UICollectionView *)collectionView;
+- (id)initWithCollectionView:(UICollectionView *)collectionView managedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 #pragma mark Core Data Properties
 @property (nonatomic, readonly) NSManagedObjectContext *managedObjectContext;
@@ -23,6 +23,6 @@
 @property (nonatomic, readonly) NSString *sectionKeyPath;
 
 #pragma mark Reload
-- (BOOL)reloadWithFetchRequest:(NSFetchRequest *)fetchRequest sectionKeyPath:(NSString *)sectionKeyPath;
+- (void)reloadWithFetchRequest:(NSFetchRequest *)fetchRequest sectionKeyPath:(NSString *)sectionKeyPath;
 
 @end
