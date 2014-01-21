@@ -5,6 +5,12 @@
       location = "group:README.md">
    </FileRef>
    <FileRef
+      location = "group:LICENSE.md">
+   </FileRef>
+   <FileRef
+      location = "group:NXCollectionViewDataSource.podspec">
+   </FileRef>
+   <FileRef
       location = "group:NXCollectionViewDataSource/NXCollectionViewDataSource.xcodeproj">
    </FileRef>
    <FileRef
