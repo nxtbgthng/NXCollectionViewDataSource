@@ -32,12 +32,12 @@
 
 #pragma mark Getting Item and Section Metrics
 
-- (NSUInteger)numberOfSections
+- (NSInteger)numberOfSections
 {
     return [self.sections count];
 }
 
-- (NSUInteger)numberOfItemsInSection:(NSUInteger)section
+- (NSInteger)numberOfItemsInSection:(NSInteger)section
 {
     return [self.sections[section] count];
 }
@@ -56,7 +56,7 @@
 
 #pragma mark Getting Section Name
 
-- (NSString *)nameForSection:(NSUInteger)section
+- (NSString *)nameForSection:(NSInteger)section
 {
     return self.sectionNames[section];
 }

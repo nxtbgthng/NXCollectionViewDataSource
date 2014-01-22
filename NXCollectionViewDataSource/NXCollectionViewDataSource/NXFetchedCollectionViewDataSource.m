@@ -44,12 +44,12 @@
 
 #pragma mark Getting Item and Section Metrics
 
-- (NSUInteger)numberOfSections
+- (NSInteger)numberOfSections
 {
     return [[self.fetchedResultsController sections] count];
 }
 
-- (NSUInteger)numberOfItemsInSection:(NSUInteger)section
+- (NSInteger)numberOfItemsInSection:(NSInteger)section
 {
     id <NSFetchedResultsSectionInfo> sectionInfo = self.fetchedResultsController.sections[section];
     return [sectionInfo numberOfObjects];
@@ -69,7 +69,7 @@
 
 #pragma mark Getting Section Name
 
-- (NSString *)nameForSection:(NSUInteger)section
+- (NSString *)nameForSection:(NSInteger)section
 {
     id <NSFetchedResultsSectionInfo> sectionInfo = self.fetchedResultsController.sections[section];
     return [sectionInfo name];

@@ -54,15 +54,15 @@ typedef void(^NXCollectionViewDataSourcePostUpdateBlock)(NXCollectionViewDataSou
 - (void)registerNib:(UINib *)nib forSupplementaryViewOfKind:(NSString *)elementKind withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock;
 
 #pragma mark Getting Item and Section Metrics
-- (NSUInteger)numberOfSections;
-- (NSUInteger)numberOfItemsInSection:(NSUInteger)section;
+- (NSInteger)numberOfSections;
+- (NSInteger)numberOfItemsInSection:(NSInteger)section;
 
 #pragma mark Getting Items and Index Paths
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath;
 - (NSArray *)indexPathsOfItem:(id)item;
 
 #pragma mark Getting Section Name
-- (NSString *)nameForSection:(NSUInteger)section;
+- (NSString *)nameForSection:(NSInteger)section;
 
 #pragma mark Reload
 - (void)reload;
@@ -71,3 +71,8 @@ typedef void(^NXCollectionViewDataSourcePostUpdateBlock)(NXCollectionViewDataSou
 @property (copy) NXCollectionViewDataSourcePostUpdateBlock postUpdateBlock;
 
 @end
+
+// Import Subclasses to have a Framework Header
+
+#import "NXStaticCollectionViewDataSource.h"
+#import "NXFetchedCollectionViewDataSource.h"

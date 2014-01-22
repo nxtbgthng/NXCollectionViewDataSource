@@ -64,12 +64,12 @@ NSString * const NXCollectionViewDataSourceCellReuseIdentifier = @"NXCollectionV
 
 #pragma mark Getting Item and Section Metrics
 
-- (NSUInteger)numberOfSections
+- (NSInteger)numberOfSections
 {
     return 0;
 }
 
-- (NSUInteger)numberOfItemsInSection:(NSUInteger)section
+- (NSInteger)numberOfItemsInSection:(NSInteger)section
 {
     return 0;
 }
@@ -88,7 +88,7 @@ NSString * const NXCollectionViewDataSourceCellReuseIdentifier = @"NXCollectionV
 
 #pragma mark Getting Section Name
 
-- (NSString *)nameForSection:(NSUInteger)section
+- (NSString *)nameForSection:(NSInteger)section
 {
     return nil;
 }

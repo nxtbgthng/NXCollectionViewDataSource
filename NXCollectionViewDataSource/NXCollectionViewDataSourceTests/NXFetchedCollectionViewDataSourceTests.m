@@ -187,14 +187,14 @@
     [dataSource reloadWithFetchRequest:request sectionKeyPath:nil];
     XCTAssertEqual(numberOfTimesPostUpdateBlockHasBeenCalled, (NSInteger)1);
     
-    XCTAssertEqual([dataSource numberOfSections], (NSUInteger)1);
-    XCTAssertEqual([dataSource numberOfItemsInSection:0], (NSUInteger)0);
+    XCTAssertEqual([dataSource numberOfSections], (NSInteger)1);
+    XCTAssertEqual([dataSource numberOfItemsInSection:0], (NSInteger)0);
     
     [self fillContextWithPersons];
     XCTAssertEqual(numberOfTimesPostUpdateBlockHasBeenCalled, (NSInteger)2);
     
-    XCTAssertEqual([dataSource numberOfSections], (NSUInteger)1);
-    XCTAssertEqual([dataSource numberOfItemsInSection:0], (NSUInteger)3);
+    XCTAssertEqual([dataSource numberOfSections], (NSInteger)1);
+    XCTAssertEqual([dataSource numberOfItemsInSection:0], (NSInteger)3);
 }
 
 #pragma mark Fixtures
