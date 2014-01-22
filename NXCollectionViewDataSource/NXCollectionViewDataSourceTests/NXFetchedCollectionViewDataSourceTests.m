@@ -89,6 +89,28 @@
     XCTAssertThrowsSpecificNamed([dataSource reloadWithFetchRequest:request sectionKeyPath:nil], NSException, @"NSInvalidArgumentException");
 }
 
+- (void)testReset
+{
+    [self fillContextWithPersons];
+    
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    
+    NXFetchedCollectionViewDataSource *dataSource = [[NXFetchedCollectionViewDataSource alloc] initWithCollectionView:collectionView managedObjectContext:self.managedObjectContext];
+    XCTAssertNotNil(dataSource);
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Person"];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"age" ascending:YES]];
+    
+    [dataSource reloadWithFetchRequest:request sectionKeyPath:nil];
+    
+    XCTAssertEqual([dataSource numberOfSectionsInCollectionView:collectionView], 1);
+    XCTAssertEqual([dataSource collectionView:collectionView numberOfItemsInSection:0], 3);
+    
+    [dataSource reset];
+    
+    XCTAssertEqual([dataSource numberOfSectionsInCollectionView:collectionView], 0);
+}
+
 - (void)testGettingItemAndSectionMetrics
 {
     [self fillContextWithPersons];

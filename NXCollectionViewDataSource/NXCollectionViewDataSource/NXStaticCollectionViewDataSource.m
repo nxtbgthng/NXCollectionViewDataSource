@@ -79,4 +79,9 @@
     [self reload];
 }
 
+- (void)reset
+{
+    [self reloadWithSections:nil sectionNames:nil];
+}
+
 @end
