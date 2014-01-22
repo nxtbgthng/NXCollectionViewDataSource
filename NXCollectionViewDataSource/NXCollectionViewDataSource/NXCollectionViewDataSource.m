@@ -50,16 +50,22 @@ NSString * const NXCollectionViewDataSourceCellReuseIdentifier = @"NXCollectionV
 
 - (void)registerClass:(Class)viewClass forSupplementaryViewOfKind:(NSString *)elementKind withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock
 {
-    NSString *reuseIdentifier = elementKind;
-    self.supplementaryViewPrepareBlock[elementKind] = prepareBlock;
-    [self.collectionView registerClass:viewClass forSupplementaryViewOfKind:elementKind withReuseIdentifier:reuseIdentifier];
+    if (prepareBlock) {
+        [self.supplementaryViewPrepareBlock setObject:prepareBlock forKey:elementKind];
+    } else {
+        [self.supplementaryViewPrepareBlock removeObjectForKey:elementKind];
+    }
+    [self.collectionView registerClass:viewClass forSupplementaryViewOfKind:elementKind withReuseIdentifier:elementKind];
 }
 
 - (void)registerNib:(UINib *)nib forSupplementaryViewOfKind:(NSString *)elementKind withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock
 {
-    NSString *reuseIdentifier = elementKind;
-    self.supplementaryViewPrepareBlock[elementKind] = prepareBlock;
-    [self.collectionView registerNib:nib forSupplementaryViewOfKind:elementKind withReuseIdentifier:reuseIdentifier];
+    if (prepareBlock) {
+        [self.supplementaryViewPrepareBlock setObject:prepareBlock forKey:elementKind];
+    } else {
+        [self.supplementaryViewPrepareBlock removeObjectForKey:elementKind];
+    }
+    [self.collectionView registerNib:nib forSupplementaryViewOfKind:elementKind withReuseIdentifier:elementKind];
 }
 
 #pragma mark Getting Item and Section Metrics
