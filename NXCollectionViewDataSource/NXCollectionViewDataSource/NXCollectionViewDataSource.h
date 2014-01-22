@@ -71,3 +71,8 @@ typedef void(^NXCollectionViewDataSourcePostUpdateBlock)(NXCollectionViewDataSou
 @property (copy) NXCollectionViewDataSourcePostUpdateBlock postUpdateBlock;
 
 @end
+
+// Import Subclasses to have a Framework Header
+
+#import "NXStaticCollectionViewDataSource.h"
+#import "NXFetchedCollectionViewDataSource.h"
