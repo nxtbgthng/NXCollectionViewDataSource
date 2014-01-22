@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "NXCollectionViewDataSource"
-  s.version      = "1.0.2"
+  s.version      = "1.0.3"
   s.summary      = "Generic data source for UICollectionView using either static data of a NSFetchRequest."
   s.homepage     = "https://code.nxtbgthng.com/libraries/nxcollectionviewdatasource"
   s.license      = 'Copyright (c) 2014 nxtbgthng GmbH. All rights reserved.'
