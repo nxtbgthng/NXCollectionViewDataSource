@@ -83,19 +83,30 @@
     self.fetchRequest = fetchRequest;
     self.sectionKeyPath = sectionKeyPath;
     
-    self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
-                                                                        managedObjectContext:self.managedObjectContext
-                                                                          sectionNameKeyPath:self.sectionKeyPath
-                                                                                   cacheName:nil];
-    self.fetchedResultsController.delegate = self;
+    BOOL success = YES;
     
-    NSError *error = nil;
-    BOOL success = [self.fetchedResultsController performFetch:&error];
-    NSAssert(success, [error localizedDescription]);
+    if (fetchRequest) {
+        self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
+                                                                            managedObjectContext:self.managedObjectContext
+                                                                              sectionNameKeyPath:self.sectionKeyPath
+                                                                                       cacheName:nil];
+        self.fetchedResultsController.delegate = self;
+        
+        NSError *error = nil;
+        success = [self.fetchedResultsController performFetch:&error];
+        NSAssert(success, [error localizedDescription]);
+    } else {
+        self.fetchedResultsController = nil;
+    }
     
     if (success) {
         [self reload];
     }
+}
+
+- (void)reset
+{
+    [self reloadWithFetchRequest:nil sectionKeyPath:nil];
 }
 
 #pragma mark NSFetchedResultsControllerDelegate

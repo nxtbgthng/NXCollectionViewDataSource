@@ -109,6 +109,11 @@ NSString * const NXCollectionViewDataSourceCellReuseIdentifier = @"NXCollectionV
     }
 }
 
+- (void)reset
+{
+    
+}
+
 #pragma mark UICollectionViewDataSource
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
