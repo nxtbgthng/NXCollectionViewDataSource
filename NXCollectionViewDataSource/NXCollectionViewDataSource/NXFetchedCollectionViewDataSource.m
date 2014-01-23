@@ -20,6 +20,9 @@
 @property (nonatomic, readonly) NSMutableArray *insertedItems;
 @property (nonatomic, readonly) NSMutableArray *deletedItems;
 @property (nonatomic, readonly) NSMutableArray *movedItems;
+
+#pragma mark Fetch Offset & Limit
+@property (nonatomic, readonly) BOOL hasOffsetOrLimit;
 @end
 
 @implementation NXFetchedCollectionViewDataSource
@@ -64,7 +67,12 @@
 
 - (NSArray *)indexPathsOfItem:(id)item;
 {
-    return @[[self.fetchedResultsController indexPathForObject:item]];
+    NSIndexPath *indexPath = [self.fetchedResultsController indexPathForObject:item];
+    if (indexPath) {
+        return @[indexPath];
+    } else {
+        return @[];
+    }
 }
 
 #pragma mark Getting Section Name
@@ -77,6 +85,11 @@
 
 
 #pragma mark Reload
+
+- (void)reload
+{
+    [self reloadWithFetchRequest:self.fetchRequest sectionKeyPath:self.sectionKeyPath];
+}
 
 - (void)reloadWithFetchRequest:(NSFetchRequest *)fetchRequest sectionKeyPath:(NSString *)sectionKeyPath
 {
@@ -100,13 +113,20 @@
     }
     
     if (success) {
-        [self reload];
+        [super reload];
     }
 }
 
 - (void)reset
 {
     [self reloadWithFetchRequest:nil sectionKeyPath:nil];
+}
+
+#pragma mark Fetch Offset & Limit
+
+- (BOOL)hasOffsetOrLimit
+{
+    return self.fetchRequest.fetchOffset > 0 || self.fetchRequest.fetchLimit > 0;
 }
 
 #pragma mark NSFetchedResultsControllerDelegate
@@ -211,6 +231,16 @@
     // ---------------
     
     if (hasChanges) {
+        
+        if (self.hasOffsetOrLimit) {
+            
+            // WORKAROUND: If the fetch offset or fetch limit is set, the collection view needs to reload,
+            //             because the NSFetchedResultsController ignors this while handling the updates.
+            
+            [self reload];
+            return;
+        }
+        
         [self.collectionView performBatchUpdates:^{
             [self.collectionView deleteSections:deletedSections];
             [self.collectionView insertSections:insertedSections];

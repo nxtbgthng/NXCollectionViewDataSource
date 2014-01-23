@@ -76,7 +76,7 @@
         }];
     }];
     
-    [self reload];
+    [super reload];
 }
 
 - (void)reset
