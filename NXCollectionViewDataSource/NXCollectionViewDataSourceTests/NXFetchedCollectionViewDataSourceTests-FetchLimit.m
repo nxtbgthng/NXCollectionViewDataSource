@@ -61,8 +61,10 @@
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"age" ascending:YES]];
     request.fetchLimit = 10;
     
+    NSMutableArray *persons = [[NSMutableArray alloc] init];
     for (int i = 0; i < 100; i++) {
-        [self insertPersonWithName:[NSString stringWithFormat:@"Persion #%d", i + 10] age:i + 10];
+        Person *person = [self insertPersonWithName:[NSString stringWithFormat:@"Persion #%d", i * 10] age:i * 10];
+        [persons addObject:person];
     }
     
     [dataSource reloadWithFetchRequest:request sectionKeyPath:nil];
@@ -70,10 +72,16 @@
     XCTAssertEqual([dataSource numberOfSections], (NSInteger)1);
     XCTAssertEqual([dataSource numberOfItemsInSection:0], (NSInteger)10);
     
-    Person *person = [self insertPersonWithName:@"Persion #0" age:0];
+    Person *person = [self insertPersonWithName:@"Persion #4" age:4];
     
     XCTAssertEqual([dataSource numberOfSections], (NSInteger)1);
     XCTAssertEqual([dataSource numberOfItemsInSection:0], (NSInteger)10);
+    
+    NSIndexPath *indexPathOfRemovedPerson = [[dataSource indexPathsOfItem:[persons lastObject]] firstObject];
+    XCTAssertNil(indexPathOfRemovedPerson);
+
+    NSIndexPath *indexPathOfInsertedPerson = [[dataSource indexPathsOfItem:person] firstObject];
+    XCTAssertEqualObjects(indexPathOfInsertedPerson, [NSIndexPath indexPathForItem:1 inSection:0]);
 }
 
 #pragma mark Fixtures
