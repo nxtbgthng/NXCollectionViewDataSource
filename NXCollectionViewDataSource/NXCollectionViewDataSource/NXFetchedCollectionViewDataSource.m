@@ -75,6 +75,11 @@
     }
 }
 
+- (NSArray *)fetchedItems
+{
+    return self.fetchedResultsController.fetchedObjects;
+}
+
 #pragma mark Getting Section Name
 
 - (NSString *)nameForSection:(NSInteger)section

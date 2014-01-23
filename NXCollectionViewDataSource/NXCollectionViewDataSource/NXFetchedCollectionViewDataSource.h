@@ -22,6 +22,9 @@
 @property (nonatomic, readonly) NSFetchRequest *fetchRequest;
 @property (nonatomic, readonly) NSString *sectionKeyPath;
 
+#pragma mark Getting Items and Index Paths
+@property (nonatomic, readonly) NSArray *fetchedItems;
+
 #pragma mark Reload
 - (void)reloadWithFetchRequest:(NSFetchRequest *)fetchRequest sectionKeyPath:(NSString *)sectionKeyPath;
 
