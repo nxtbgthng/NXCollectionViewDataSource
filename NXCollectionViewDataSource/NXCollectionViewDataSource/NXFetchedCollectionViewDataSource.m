@@ -88,6 +88,22 @@
     return [sectionInfo name];
 }
 
+#pragma mark Section Item
+
+- (id)itemForSection:(NSInteger)section
+{
+    NSString *nameForSection = [self nameForSection:section];
+    if ([nameForSection hasPrefix:@"x-coredata://"]) {
+        NSURL *URL = [NSURL URLWithString:nameForSection];
+        NSManagedObjectID *managedObjectID = [self.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:URL];
+        NSError *error = nil;
+        NSManagedObject *sectionObject = [self.managedObjectContext existingObjectWithID:managedObjectID error:&error];
+        NSAssert(error == nil, [error localizedDescription]);
+        return sectionObject;
+    } else {
+        return nameForSection;
+    }
+}
 
 #pragma mark Reload
 

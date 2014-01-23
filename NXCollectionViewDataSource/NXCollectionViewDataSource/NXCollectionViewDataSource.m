@@ -99,6 +99,13 @@ NSString * const NXCollectionViewDataSourceCellReuseIdentifier = @"NXCollectionV
     return nil;
 }
 
+#pragma mark Section Item
+
+- (id)itemForSection:(NSInteger)section
+{
+    return nil;
+}
+
 #pragma mark Reload
 
 - (void)reload

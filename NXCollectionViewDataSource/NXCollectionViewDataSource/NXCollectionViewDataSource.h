@@ -64,6 +64,9 @@ typedef void(^NXCollectionViewDataSourcePostUpdateBlock)(NXCollectionViewDataSou
 #pragma mark Getting Section Name
 - (NSString *)nameForSection:(NSInteger)section;
 
+#pragma mark Section Item
+- (id)itemForSection:(NSInteger)section;
+
 #pragma mark Reload & Reset
 - (void)reload;
 - (void)reset;
