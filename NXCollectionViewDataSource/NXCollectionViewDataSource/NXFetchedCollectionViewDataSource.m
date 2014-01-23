@@ -203,23 +203,39 @@
         return YES;
     }];
     
-    NSArray *insertedItems = [self.insertedItems filteredArrayUsingPredicate:indexPathFilter];
-    NSArray *deletedItems = [self.deletedItems filteredArrayUsingPredicate:indexPathFilter];
+    NSMutableArray *insertedItems = [[self.insertedItems filteredArrayUsingPredicate:indexPathFilter] mutableCopy];
+    NSMutableArray *deletedItems = [[self.deletedItems filteredArrayUsingPredicate:indexPathFilter] mutableCopy];
     
     NSArray *movedItems = [self.movedItems filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSArray *move, NSDictionary *bindings) {
         
-        NSIndexPath *from = [move objectAtIndex:0];
-        NSIndexPath *to = [move objectAtIndex:1];
+        NSIndexPath *from = [move firstObject];
+        NSIndexPath *to = [move lastObject];
         
-        NSMutableIndexSet *sections = [[NSMutableIndexSet alloc] init];
-        [sections addIndex:from.section];
-        [sections addIndex:to.section];
-        
-        if ([insertedSections containsIndexes:sections]) {
+        // Item comes from a section has has been deleted
+        if ([deletedSections containsIndex:from.section]) {
+         
+            NSUInteger sectionOffset = [[deletedSections indexesPassingTest:^BOOL(NSUInteger idx, BOOL *stop) {
+                return idx <= to.section;
+            }] count];
+            
+            // … and goes to an other section
+            if ([insertedSections containsIndex:to.section + sectionOffset] == NO && [deletedSections containsIndex:to.section + sectionOffset] == NO)
+                [insertedItems addObject:to];
+            
             return NO;
         }
         
-        if ([deletedSections containsIndexes:sections]) {
+        // Item goes to a section has has been inserted
+        if ([insertedSections containsIndex:to.section]) {
+            
+            NSUInteger sectionOffset = [[insertedSections indexesPassingTest:^BOOL(NSUInteger idx, BOOL *stop) {
+                return idx <= from.section;
+            }] count];
+            
+            // … and comes from an exsiting section
+            if ([insertedSections containsIndex:from.section + sectionOffset] == NO && [deletedSections containsIndex:from.section + sectionOffset] == NO)
+                [deletedItems addObject:from];
+            
             return NO;
         }
         
