@@ -217,21 +217,21 @@
         NSIndexPath *from = [move firstObject];
         NSIndexPath *to = [move lastObject];
         
-        // Item comes from a section has has been deleted
+        // Item comes from a section that has been deleted
         if ([deletedSections containsIndex:from.section]) {
          
             NSUInteger sectionOffset = [[deletedSections indexesPassingTest:^BOOL(NSUInteger idx, BOOL *stop) {
                 return idx <= to.section;
             }] count];
             
-            // … and goes to an other section
+            // … and goes to an exsiting section
             if ([insertedSections containsIndex:to.section + sectionOffset] == NO && [deletedSections containsIndex:to.section + sectionOffset] == NO)
                 [insertedItems addObject:to];
             
             return NO;
         }
         
-        // Item goes to a section has has been inserted
+        // Item goes to a section that has been inserted
         if ([insertedSections containsIndex:to.section]) {
             
             NSUInteger sectionOffset = [[insertedSections indexesPassingTest:^BOOL(NSUInteger idx, BOOL *stop) {
