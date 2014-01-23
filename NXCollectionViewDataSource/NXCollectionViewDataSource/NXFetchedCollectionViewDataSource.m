@@ -14,6 +14,9 @@
 @property (nonatomic, readwrite, strong) NSString *sectionKeyPath;
 @property (nonatomic, readwrite, strong) NSFetchedResultsController *fetchedResultsController;
 
+#pragma mark Section Info
+@property (nonatomic, strong) NSArray *sectionInfos;
+
 #pragma mark Data Source Changes
 @property (nonatomic, readonly) NSMutableIndexSet *insertedSections;
 @property (nonatomic, readonly) NSMutableIndexSet *deletedSections;
@@ -49,12 +52,12 @@
 
 - (NSInteger)numberOfSections
 {
-    return [[self.fetchedResultsController sections] count];
+    return [self.sectionInfos count];
 }
 
 - (NSInteger)numberOfItemsInSection:(NSInteger)section
 {
-    id <NSFetchedResultsSectionInfo> sectionInfo = self.fetchedResultsController.sections[section];
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.sectionInfos objectAtIndex:section];
     return [sectionInfo numberOfObjects];
 }
 
@@ -113,8 +116,11 @@
         NSError *error = nil;
         success = [self.fetchedResultsController performFetch:&error];
         NSAssert(success, [error localizedDescription]);
+        
+        self.sectionInfos = [self.fetchedResultsController.sections copy];
     } else {
         self.fetchedResultsController = nil;
+        self.sectionInfos = nil;
     }
     
     if (success) {
@@ -274,6 +280,8 @@
                 NSIndexPath *to = [move objectAtIndex:1];
                 [self.collectionView moveItemAtIndexPath:from toIndexPath:to];
             }];
+            
+            self.sectionInfos = [self.fetchedResultsController.sections copy];
         } completion:^(BOOL finished) {
             
         }];
