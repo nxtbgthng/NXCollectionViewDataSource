@@ -16,7 +16,6 @@
 
 - (NSString *)uppercaseFirstLetterOfName
 {
-    [self willAccessValueForKey:@"uppercaseFirstLetterOfName"];
     NSString *uppercaseName = [self.name uppercaseString];
     return [uppercaseName substringWithRange:[uppercaseName rangeOfComposedCharacterSequenceAtIndex:0]];
 }
