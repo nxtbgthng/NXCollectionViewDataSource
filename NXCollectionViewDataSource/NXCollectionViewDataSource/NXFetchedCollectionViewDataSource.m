@@ -13,7 +13,7 @@
 typedef enum {
     NXFetchedCollectionViewDataSourceSectionBehaviourDEFAULT = 0,
     NXFetchedCollectionViewDataSourceSectionBehaviourRELATIONSHIP,
-    
+    NXFetchedCollectionViewDataSourceSectionBehaviourATTRIBUTE
 } NXFetchedCollectionViewDataSourceSectionBehaviour;
 
 @interface NXFetchedCollectionViewDataSource () <NSFetchedResultsControllerDelegate>
@@ -24,6 +24,7 @@ typedef enum {
 
 #pragma mark Section Behaviour
 @property (nonatomic, assign) NXFetchedCollectionViewDataSourceSectionBehaviour sectionBehaviour;
+@property (nonatomic, strong) NSAttributeDescription *sectionAttributeDescription;
 
 #pragma mark Data Source Changes
 @property (nonatomic, readonly) NSMutableIndexSet *insertedSections;
@@ -110,6 +111,31 @@ typedef enum {
                     return nil;
                 }
                 
+            case NXFetchedCollectionViewDataSourceSectionBehaviourATTRIBUTE:
+                if ([sectionInfo.name length] == 0) {
+                    return nil;
+                } else {
+                    switch (self.sectionAttributeDescription.attributeType) {
+                        case NSInteger16AttributeType:
+                        case NSInteger32AttributeType:
+                        case NSInteger64AttributeType:
+                            return @([sectionInfo.name integerValue]);
+
+                        case NSDoubleAttributeType:
+                        case NSFloatAttributeType:
+                            return @([sectionInfo.name doubleValue]);
+                        
+                        case NSBooleanAttributeType:
+                            return @([sectionInfo.name boolValue]);
+                            
+                        case NSDateAttributeType:
+                            return [NSDate dateWithTimeIntervalSinceReferenceDate:[sectionInfo.name doubleValue]];
+                            
+                        default:
+                            return sectionInfo.name;
+                    }
+                }
+                
             default:
                 return sectionInfo.name;
                 break;
@@ -159,8 +185,74 @@ typedef enum {
     }
 }
 
+- (void)reloadWithFetchRequest:(NSFetchRequest *)fetchRequest sectionAttributeDescription:(NSAttributeDescription *)attributeDescription
+{
+    NSParameterAssert(attributeDescription.attributeType != NSUndefinedAttributeType);
+    NSParameterAssert(attributeDescription.attributeType != NSObjectIDAttributeType);
+    NSParameterAssert(attributeDescription.attributeType != NSTransformableAttributeType);
+    NSParameterAssert(attributeDescription.attributeType != NSBinaryDataAttributeType);
+    NSParameterAssert(attributeDescription.attributeType != NSDecimalAttributeType);
+    NSParameterAssert([fetchRequest.entityName isEqual:attributeDescription.entity.name]);
+    
+    self.sectionAttributeDescription = attributeDescription;
+    
+    NSString *sectionKeyPath = [NSString stringWithFormat:@"NXFetchedCollectionViewDataSource_%@", attributeDescription.name];
+    Class managedObjectClass = NSClassFromString([attributeDescription.entity managedObjectClassName]);
+    SEL selector = NSSelectorFromString(sectionKeyPath);
+    
+    if ([managedObjectClass instancesRespondToSelector:selector] == NO) {
+        
+        switch (attributeDescription.attributeType) {
+            
+            case NSInteger16AttributeType:
+            case NSInteger32AttributeType:
+            case NSInteger64AttributeType:
+            case NSDoubleAttributeType:
+            case NSFloatAttributeType:
+            case NSBooleanAttributeType:
+            {
+                class_addMethod(managedObjectClass, selector, imp_implementationWithBlock(^(NSManagedObject *self) {
+                    NSNumber *value = [self valueForKey:attributeDescription.name];
+                    if (value) {
+                        return [value stringValue];
+                    } else {
+                        return @"";
+                    }
+                }), "@@:");
+                break;
+            }
+            
+            case NSDateAttributeType:
+            {
+                class_addMethod(managedObjectClass, selector, imp_implementationWithBlock(^(NSManagedObject *self) {
+                    NSDate *value = [self valueForKey:attributeDescription.name];
+                    if (value) {
+                        NSTimeInterval timeInterval = [value timeIntervalSinceReferenceDate];
+                        return [NSString stringWithFormat:@"%lf", timeInterval];
+                    } else {
+                        return @"";
+                    }
+                }), "@@:");
+                break;
+            }
+            
+            case NSStringAttributeType:
+            default:
+            {
+                class_addMethod(managedObjectClass, selector, imp_implementationWithBlock(^(NSManagedObject *self) {
+                    return [self valueForKey:attributeDescription.name];
+                }), "@@:");
+                break;
+            }
+        }
+    }
+    
+    [self reloadWithFetchRequest:fetchRequest sectionKeyPath:sectionKeyPath sectionBehaviour:NXFetchedCollectionViewDataSourceSectionBehaviourATTRIBUTE];
+}
+
 - (void)reloadWithFetchRequest:(NSFetchRequest *)fetchRequest sectionRelationshipDescription:(NSRelationshipDescription *)relationshipDescription
 {
+    NSParameterAssert([fetchRequest.entityName isEqual:relationshipDescription.entity.name]);
     NSParameterAssert([relationshipDescription isToMany] == NO);
     
     NSString *sectionKeyPath = [NSString stringWithFormat:@"NXFetchedCollectionViewDataSource_%@", relationshipDescription.name];

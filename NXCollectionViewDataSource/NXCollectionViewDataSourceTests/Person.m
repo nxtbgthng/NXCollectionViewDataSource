@@ -13,6 +13,9 @@
 
 @dynamic name;
 @dynamic age;
+@dynamic female;
+@dynamic rating;
+@dynamic modified;
 
 - (NSString *)uppercaseFirstLetterOfName
 {

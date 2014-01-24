@@ -14,6 +14,10 @@
 
 @property (nonatomic, retain) NSString *name;
 @property (nonatomic) int32_t age;
+@property (nonatomic) BOOL female;
+
+@property (nonatomic) double rating;
+@property (nonatomic) NSDate *modified;
 
 @property (nonatomic, readonly) NSString *uppercaseFirstLetterOfName;
 
