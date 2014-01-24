@@ -14,6 +14,9 @@
 @property (nonatomic, readwrite, strong) NSString *sectionKeyPath;
 @property (nonatomic, readwrite, strong) NSFetchedResultsController *fetchedResultsController;
 
+#pragma mark Section Info
+@property (nonatomic, strong) NSArray *sectionInfos;
+
 #pragma mark Data Source Changes
 @property (nonatomic, readonly) NSMutableIndexSet *insertedSections;
 @property (nonatomic, readonly) NSMutableIndexSet *deletedSections;
@@ -49,12 +52,12 @@
 
 - (NSInteger)numberOfSections
 {
-    return [[self.fetchedResultsController sections] count];
+    return [self.sectionInfos count];
 }
 
 - (NSInteger)numberOfItemsInSection:(NSInteger)section
 {
-    id <NSFetchedResultsSectionInfo> sectionInfo = self.fetchedResultsController.sections[section];
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.sectionInfos objectAtIndex:section];
     return [sectionInfo numberOfObjects];
 }
 
@@ -113,8 +116,11 @@
         NSError *error = nil;
         success = [self.fetchedResultsController performFetch:&error];
         NSAssert(success, [error localizedDescription]);
+        
+        self.sectionInfos = [self.fetchedResultsController.sections copy];
     } else {
         self.fetchedResultsController = nil;
+        self.sectionInfos = nil;
     }
     
     if (success) {
@@ -203,23 +209,39 @@
         return YES;
     }];
     
-    NSArray *insertedItems = [self.insertedItems filteredArrayUsingPredicate:indexPathFilter];
-    NSArray *deletedItems = [self.deletedItems filteredArrayUsingPredicate:indexPathFilter];
+    NSMutableArray *insertedItems = [[self.insertedItems filteredArrayUsingPredicate:indexPathFilter] mutableCopy];
+    NSMutableArray *deletedItems = [[self.deletedItems filteredArrayUsingPredicate:indexPathFilter] mutableCopy];
     
     NSArray *movedItems = [self.movedItems filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSArray *move, NSDictionary *bindings) {
         
-        NSIndexPath *from = [move objectAtIndex:0];
-        NSIndexPath *to = [move objectAtIndex:1];
+        NSIndexPath *from = [move firstObject];
+        NSIndexPath *to = [move lastObject];
         
-        NSMutableIndexSet *sections = [[NSMutableIndexSet alloc] init];
-        [sections addIndex:from.section];
-        [sections addIndex:to.section];
-        
-        if ([insertedSections containsIndexes:sections]) {
+        // Item comes from a section that has been deleted
+        if ([deletedSections containsIndex:from.section]) {
+         
+            NSUInteger sectionOffset = [[deletedSections indexesPassingTest:^BOOL(NSUInteger idx, BOOL *stop) {
+                return idx <= to.section;
+            }] count];
+            
+            // … and goes to an exsiting section
+            if ([insertedSections containsIndex:to.section + sectionOffset] == NO && [deletedSections containsIndex:to.section + sectionOffset] == NO)
+                [insertedItems addObject:to];
+            
             return NO;
         }
         
-        if ([deletedSections containsIndexes:sections]) {
+        // Item goes to a section that has been inserted
+        if ([insertedSections containsIndex:to.section]) {
+            
+            NSUInteger sectionOffset = [[insertedSections indexesPassingTest:^BOOL(NSUInteger idx, BOOL *stop) {
+                return idx <= from.section;
+            }] count];
+            
+            // … and comes from an exsiting section
+            if ([insertedSections containsIndex:from.section + sectionOffset] == NO && [deletedSections containsIndex:from.section + sectionOffset] == NO)
+                [deletedItems addObject:from];
+            
             return NO;
         }
         
@@ -258,6 +280,8 @@
                 NSIndexPath *to = [move objectAtIndex:1];
                 [self.collectionView moveItemAtIndexPath:from toIndexPath:to];
             }];
+            
+            self.sectionInfos = [self.fetchedResultsController.sections copy];
         } completion:^(BOOL finished) {
             
         }];
