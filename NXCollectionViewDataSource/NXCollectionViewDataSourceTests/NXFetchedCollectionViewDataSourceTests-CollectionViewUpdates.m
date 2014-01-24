@@ -111,6 +111,43 @@
     XCTAssertEqual([collectionView numberOfItemsInSection:1], (NSInteger)2);
 }
 
+- (void)testUpdateWithMove
+{
+    UIWindow *window = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, 1024, 768)];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:window.bounds collectionViewLayout:[[UICollectionViewFlowLayout alloc] init]];
+    [window addSubview:collectionView];
+    
+    NXFetchedCollectionViewDataSource *dataSource = [[NXFetchedCollectionViewDataSource alloc] initWithCollectionView:collectionView managedObjectContext:self.managedObjectContext];
+    [dataSource registerClass:[UICollectionViewCell class] withPrepareBlock:^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {}];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Person"];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES], [NSSortDescriptor sortDescriptorWithKey:@"age" ascending:YES]];
+    
+    [dataSource reloadWithFetchRequest:request sectionKeyPath:@"uppercaseFirstLetterOfName"];
+    
+    Person *one     = [self insertPersonWithName:@"B1" age:1];
+    Person *two     = [self insertPersonWithName:@"B2" age:2];
+    Person *three   = [self insertPersonWithName:@"B3" age:3];
+    
+    XCTAssertEqual([collectionView numberOfSections], (NSInteger)1);
+    XCTAssertEqual([collectionView numberOfItemsInSection:0], (NSInteger)3);
+    
+    XCTAssertEqualObjects([dataSource itemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]], one);
+    XCTAssertEqualObjects([dataSource itemAtIndexPath:[NSIndexPath indexPathForItem:1 inSection:0]], two);
+    XCTAssertEqualObjects([dataSource itemAtIndexPath:[NSIndexPath indexPathForItem:2 inSection:0]], three);
+    
+    three.name = @"A1";
+    three.age = 1;
+    
+    NSError *error = nil;
+    BOOL success = [self.managedObjectContext save:&error];
+    NSAssert(success, [error localizedDescription]);
+    
+    XCTAssertEqual([collectionView numberOfSections], (NSInteger)2);
+    XCTAssertEqual([collectionView numberOfItemsInSection:0], (NSInteger)1);
+    XCTAssertEqual([collectionView numberOfItemsInSection:1], (NSInteger)2);
+}
+
 #pragma mark Fixtures
 
 - (Person *)insertPersonWithName:(NSString *)name age:(NSInteger)age
