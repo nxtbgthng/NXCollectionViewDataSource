@@ -6,13 +6,24 @@
 //  Copyright (c) 2014 nxtbgthng GmbH. All rights reserved.
 //
 
+#import <objc/runtime.h>
+
 #import "NXFetchedCollectionViewDataSource.h"
+
+typedef enum {
+    NXFetchedCollectionViewDataSourceSectionBehaviourDEFAULT = 0,
+    NXFetchedCollectionViewDataSourceSectionBehaviourRELATIONSHIP,
+    
+} NXFetchedCollectionViewDataSourceSectionBehaviour;
 
 @interface NXFetchedCollectionViewDataSource () <NSFetchedResultsControllerDelegate>
 #pragma mark Core Data Properties
 @property (nonatomic, readwrite, strong) NSFetchRequest *fetchRequest;
 @property (nonatomic, readwrite, strong) NSString *sectionKeyPath;
 @property (nonatomic, readwrite, strong) NSFetchedResultsController *fetchedResultsController;
+
+#pragma mark Section Behaviour
+@property (nonatomic, assign) NXFetchedCollectionViewDataSourceSectionBehaviour sectionBehaviour;
 
 #pragma mark Data Source Changes
 @property (nonatomic, readonly) NSMutableIndexSet *insertedSections;
@@ -84,17 +95,27 @@
 
 - (id)itemForSection:(NSInteger)section
 {
-    id <NSFetchedResultsSectionInfo> sectionInfo = self.fetchedResultsController.sections[section];
-    NSString *nameForSection = sectionInfo.name;
-    if ([nameForSection hasPrefix:@"x-coredata://"]) {
-        NSURL *URL = [NSURL URLWithString:nameForSection];
-        NSManagedObjectID *managedObjectID = [self.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:URL];
-        NSError *error = nil;
-        NSManagedObject *sectionObject = [self.managedObjectContext existingObjectWithID:managedObjectID error:&error];
-        NSAssert(error == nil, [error localizedDescription]);
-        return sectionObject;
+    id <NSFetchedResultsSectionInfo> sectionInfo = [self.fetchedResultsController.sections objectAtIndex:section];
+    if (sectionInfo) {
+        switch (self.sectionBehaviour) {
+            case NXFetchedCollectionViewDataSourceSectionBehaviourRELATIONSHIP:
+                if ([sectionInfo.name hasPrefix:@"x-coredata://"]) {
+                    NSURL *URL = [NSURL URLWithString:sectionInfo.name];
+                    NSManagedObjectID *managedObjectID = [self.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:URL];
+                    NSError *error = nil;
+                    NSManagedObject *sectionObject = [self.managedObjectContext existingObjectWithID:managedObjectID error:&error];
+                    NSAssert(error == nil, [error localizedDescription]);
+                    return sectionObject;
+                } else {
+                    return nil;
+                }
+                
+            default:
+                return sectionInfo.name;
+                break;
+        }
     } else {
-        return nameForSection;
+        return nil;
     }
 }
 
@@ -102,15 +123,22 @@
 
 - (void)reload
 {
-    [self reloadWithFetchRequest:self.fetchRequest sectionKeyPath:self.sectionKeyPath];
+    [self reloadWithFetchRequest:self.fetchRequest sectionKeyPath:self.sectionKeyPath sectionBehaviour:self.sectionBehaviour];
 }
 
 - (void)reloadWithFetchRequest:(NSFetchRequest *)fetchRequest sectionKeyPath:(NSString *)sectionKeyPath
+{
+    [self reloadWithFetchRequest:fetchRequest sectionKeyPath:sectionKeyPath sectionBehaviour:NXFetchedCollectionViewDataSourceSectionBehaviourDEFAULT];
+}
+
+- (void)reloadWithFetchRequest:(NSFetchRequest *)fetchRequest sectionKeyPath:(NSString *)sectionKeyPath sectionBehaviour:(NXFetchedCollectionViewDataSourceSectionBehaviour)sectionBehaviour
 {
     self.fetchRequest = fetchRequest;
     self.sectionKeyPath = sectionKeyPath;
     
     BOOL success = YES;
+    
+    self.sectionBehaviour = sectionBehaviour;
     
     if (fetchRequest) {
         self.fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
@@ -129,6 +157,29 @@
     if (success) {
         [super reload];
     }
+}
+
+- (void)reloadWithFetchRequest:(NSFetchRequest *)fetchRequest sectionRelationshipDescription:(NSRelationshipDescription *)relationshipDescription
+{
+    NSParameterAssert([relationshipDescription isToMany] == NO);
+    
+    NSString *sectionKeyPath = [NSString stringWithFormat:@"NXFetchedCollectionViewDataSource_%@", relationshipDescription.name];
+    
+    Class managedObjectClass = NSClassFromString([relationshipDescription.entity managedObjectClassName]);
+    SEL selector = NSSelectorFromString(sectionKeyPath);
+    
+    if ([managedObjectClass instancesRespondToSelector:selector] == NO) {
+        class_addMethod(managedObjectClass, selector, imp_implementationWithBlock(^(NSManagedObject *self) {
+            NSManagedObject *relatedObject = [self valueForKey:relationshipDescription.name];
+            if (relatedObject) {
+                return [[relatedObject.objectID URIRepresentation] absoluteString];
+            } else {
+                return @"";
+            }
+        }), "@@:");
+    }
+    
+    [self reloadWithFetchRequest:fetchRequest sectionKeyPath:sectionKeyPath sectionBehaviour:NXFetchedCollectionViewDataSourceSectionBehaviourRELATIONSHIP];
 }
 
 - (void)reset

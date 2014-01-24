@@ -87,7 +87,7 @@
     BOOL success = [self.managedObjectContext save:&error];
     NSAssert(success, [error localizedDescription]);
     
-    
+    NSRelationshipDescription *groupRelationshipDescription = [personEntityDescription.relationshipsByName valueForKey:@"group"];
     
     UICollectionView *collectionView = mock([UICollectionView class]);
     
@@ -96,11 +96,11 @@
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Person"];
     request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"group.name" ascending:YES]];
     
-    [dataSource reloadWithFetchRequest:request sectionKeyPath:@"group.objectID.URIRepresentation.absoluteString"];
+    [dataSource reloadWithFetchRequest:request sectionRelationshipDescription:groupRelationshipDescription];
     
     XCTAssertEqual([dataSource numberOfSections], (NSInteger)3);
     
-    XCTAssertEqualObjects([dataSource itemForSection:0], @"");
+    XCTAssertEqualObjects([dataSource itemForSection:0], nil);
     XCTAssertEqualObjects([dataSource itemForSection:1], groupA);
     XCTAssertEqualObjects([dataSource itemForSection:2], groupB);
 }
