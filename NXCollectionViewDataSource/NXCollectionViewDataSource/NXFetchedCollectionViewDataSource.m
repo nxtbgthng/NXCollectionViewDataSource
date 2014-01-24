@@ -80,19 +80,12 @@
     return self.fetchedResultsController.fetchedObjects;
 }
 
-#pragma mark Getting Section Name
-
-- (NSString *)nameForSection:(NSInteger)section
-{
-    id <NSFetchedResultsSectionInfo> sectionInfo = self.fetchedResultsController.sections[section];
-    return [sectionInfo name];
-}
-
-#pragma mark Section Item
+#pragma mark Getting Section Item
 
 - (id)itemForSection:(NSInteger)section
 {
-    NSString *nameForSection = [self nameForSection:section];
+    id <NSFetchedResultsSectionInfo> sectionInfo = self.fetchedResultsController.sections[section];
+    NSString *nameForSection = sectionInfo.name;
     if ([nameForSection hasPrefix:@"x-coredata://"]) {
         NSURL *URL = [NSURL URLWithString:nameForSection];
         NSManagedObjectID *managedObjectID = [self.managedObjectContext.persistentStoreCoordinator managedObjectIDForURIRepresentation:URL];

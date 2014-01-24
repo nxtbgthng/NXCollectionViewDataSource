@@ -10,7 +10,7 @@
 
 @interface NXStaticCollectionViewDataSource ()
 #pragma mark Static Content
-@property (nonatomic, readwrite, strong) NSArray *sectionNames;
+@property (nonatomic, readwrite, strong) NSArray *sectionItems;
 @property (nonatomic, readwrite, strong) NSArray *sections;
 @property (nonatomic, readonly) NSMutableDictionary *items;
 @end
@@ -24,7 +24,7 @@
     self = [super initWithCollectionView:collectionView];
     if (self) {
         _sections = @[];
-        _sectionNames = @[];
+        _sectionItems = @[];
         _items = [[NSMutableDictionary alloc] init];
     }
     return self;
@@ -54,19 +54,19 @@
     return [self.items allKeysForObject:item];
 }
 
-#pragma mark Getting Section Name
+#pragma mark Getting Section Item
 
-- (NSString *)nameForSection:(NSInteger)section
+- (id)itemForSection:(NSInteger)section
 {
-    return self.sectionNames[section];
+    return self.sectionItems[section];
 }
 
 #pragma mark Reload
 
-- (void)reloadWithSections:(NSArray *)sections sectionNames:(NSArray *)sectionNames
+- (void)reloadWithSections:(NSArray *)sections sectionItems:(NSArray *)sectionNames
 {
     self.sections = sections;
-    self.sectionNames = sectionNames;
+    self.sectionItems = sectionNames;
     
     [self.items removeAllObjects];
     
@@ -81,7 +81,7 @@
 
 - (void)reset
 {
-    [self reloadWithSections:nil sectionNames:nil];
+    [self reloadWithSections:nil sectionItems:nil];
 }
 
 @end

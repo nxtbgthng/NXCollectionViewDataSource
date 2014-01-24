@@ -190,8 +190,8 @@
     NSInteger numberOfSections = [dataSource numberOfSectionsInCollectionView:collectionView];
     XCTAssertEqual(numberOfSections, 2);
     
-    XCTAssertEqualObjects([dataSource nameForSection:0], @"M");
-    XCTAssertEqualObjects([dataSource nameForSection:1], @"P");
+    XCTAssertEqualObjects([dataSource itemForSection:0], @"M");
+    XCTAssertEqualObjects([dataSource itemForSection:1], @"P");
 }
 
 - (void)testUpdatingItems

@@ -11,10 +11,10 @@
 @interface NXStaticCollectionViewDataSource : NXCollectionViewDataSource
 
 #pragma mark Static Content
-@property (nonatomic, readonly) NSArray *sectionNames;
+@property (nonatomic, readonly) NSArray *sectionItems;
 @property (nonatomic, readonly) NSArray *sections;
 
 #pragma mark Reload
-- (void)reloadWithSections:(NSArray *)sections sectionNames:(NSArray *)sectionNames;
+- (void)reloadWithSections:(NSArray *)sections sectionItems:(NSArray *)sectionItems;
 
 @end

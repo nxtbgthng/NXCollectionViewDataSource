@@ -92,14 +92,7 @@ NSString * const NXCollectionViewDataSourceCellReuseIdentifier = @"NXCollectionV
     return @[];
 }
 
-#pragma mark Getting Section Name
-
-- (NSString *)nameForSection:(NSInteger)section
-{
-    return nil;
-}
-
-#pragma mark Section Item
+#pragma mark Getting Section Item
 
 - (id)itemForSection:(NSInteger)section
 {
