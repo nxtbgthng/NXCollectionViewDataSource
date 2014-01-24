@@ -23,4 +23,10 @@
     return [uppercaseName substringWithRange:[uppercaseName rangeOfComposedCharacterSequenceAtIndex:0]];
 }
 
+- (int32_t)ageGroup
+{
+    int32_t age = self.age;
+    return floor(age / 10.0) * 10;
+}
+
 @end

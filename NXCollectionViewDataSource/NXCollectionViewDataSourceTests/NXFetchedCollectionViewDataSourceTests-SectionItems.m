@@ -207,6 +207,49 @@
     XCTAssertEqualObjects([dataSource itemForSection:1], @YES);
 }
 
+- (void)testSectionWithAttributeDescription_transient
+{
+    NSEntityDescription *entityDescription = [[self.managedObjectModel entitiesByName] valueForKey:@"Person"];
+    
+    Person *peter = [[Person alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:self.managedObjectContext];
+    peter.name = @"Peter";
+    peter.age = 23;
+    
+    Person *paul = [[Person alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:self.managedObjectContext];
+    paul.name = @"Paul";
+    paul.age = 35;
+    
+    Person *marry = [[Person alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:self.managedObjectContext];
+    marry.name = @"Marry";
+    marry.age = 27;
+    
+    NSError *error = nil;
+    BOOL success = [self.managedObjectContext save:&error];
+    NSAssert(success, [error localizedDescription]);
+    
+    UICollectionView *collectionView = mock([UICollectionView class]);
+    
+    NXFetchedCollectionViewDataSource *dataSource = [[NXFetchedCollectionViewDataSource alloc] initWithCollectionView:collectionView managedObjectContext:self.managedObjectContext];
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Person"];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"age" ascending:YES]];
+    
+    [dataSource reloadWithFetchRequest:request sectionKeyPath:@"ageGroup"];
+    
+    NSAttributeDescription *attributeDescription = [entityDescription.attributesByName valueForKey:@"ageGroup"];
+    
+    [dataSource reloadWithFetchRequest:request sectionAttributeDescription:attributeDescription];
+    
+    XCTAssertEqual([dataSource numberOfSections], (NSInteger)2);
+    
+    XCTAssertEqualObjects([dataSource itemForSection:0], @20);
+    XCTAssertEqualObjects([dataSource itemForSection:1], @30);
+    
+    XCTAssertEqualObjects([dataSource itemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]], peter);
+    XCTAssertEqualObjects([dataSource itemAtIndexPath:[NSIndexPath indexPathForItem:1 inSection:0]], marry);
+    XCTAssertEqualObjects([dataSource itemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:1]], paul);
+}
+
 - (void)testSectionsWithRelationshipDescription
 {
     NSEntityDescription *personEntityDescription = [[self.managedObjectModel entitiesByName] valueForKey:@"Person"];

@@ -20,5 +20,6 @@
 @property (nonatomic) NSDate *modified;
 
 @property (nonatomic, readonly) NSString *uppercaseFirstLetterOfName;
+@property (nonatomic, readonly) int32_t ageGroup;
 
 @end
