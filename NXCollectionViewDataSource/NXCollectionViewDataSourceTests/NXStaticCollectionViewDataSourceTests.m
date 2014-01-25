@@ -138,7 +138,8 @@
     [dataSource reloadWithSections:self.sections sectionNames:self.sectionNames];
     
     NSIndexPath *elementIndexPath = [NSIndexPath indexPathForItem:2 inSection:1];
-    UICollectionViewCell *elementCell = [[UICollectionViewCell alloc] initWithFrame:CGRectZero];
+    UICollectionViewCell *elementCell = mock([UICollectionViewCell class]);
+    [given([elementCell reuseIdentifier]) willReturn:@"NXCollectionViewDataSourceCellReuseIdentifier"];
     
     __block BOOL prepareBlockCalled = NO;
     
@@ -167,7 +168,8 @@
     
     NSString *elementKind = @"kind";
     NSIndexPath *elementIndexPath = [NSIndexPath indexPathForItem:2 inSection:1];
-    UICollectionReusableView *elementView = [[UICollectionReusableView alloc] initWithFrame:CGRectZero];
+    UICollectionReusableView *elementView = mock([UICollectionReusableView class]);
+    [given([elementView reuseIdentifier]) willReturn:elementKind];
     
     __block BOOL prepareBlockCalled = NO;
     
