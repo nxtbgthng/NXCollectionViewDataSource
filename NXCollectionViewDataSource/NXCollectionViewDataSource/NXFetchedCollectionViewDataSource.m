@@ -219,13 +219,9 @@
         
         // Item comes from a section that has been deleted
         if ([deletedSections containsIndex:from.section]) {
-         
-            NSUInteger sectionOffset = [[deletedSections indexesPassingTest:^BOOL(NSUInteger idx, BOOL *stop) {
-                return idx <= to.section;
-            }] count];
             
             // … and goes to an exsiting section
-            if ([insertedSections containsIndex:to.section + sectionOffset] == NO && [deletedSections containsIndex:to.section + sectionOffset] == NO)
+            if ([insertedSections containsIndex:to.section] == NO)
                 [insertedItems addObject:to];
             
             return NO;
@@ -234,12 +230,8 @@
         // Item goes to a section that has been inserted
         if ([insertedSections containsIndex:to.section]) {
             
-            NSUInteger sectionOffset = [[insertedSections indexesPassingTest:^BOOL(NSUInteger idx, BOOL *stop) {
-                return idx <= from.section;
-            }] count];
-            
             // … and comes from an exsiting section
-            if ([insertedSections containsIndex:from.section + sectionOffset] == NO && [deletedSections containsIndex:from.section + sectionOffset] == NO)
+            if ([deletedSections containsIndex:from.section] == NO)
                 [deletedItems addObject:from];
             
             return NO;
