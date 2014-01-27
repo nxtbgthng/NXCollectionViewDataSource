@@ -47,7 +47,7 @@
 
                       NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
                       [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
-                      NSNumber *selected = [formatter numberFromString:[dataSource nameForSection:indexPath.section]];
+                      NSNumber *selected = [formatter numberFromString:[dataSource itemForSection:indexPath.section]];
                       
                       if ([selected boolValue]) {
                           view.label.text = @"Selected Colors";
