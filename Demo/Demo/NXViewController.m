@@ -45,11 +45,16 @@
         forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                   withPrepareBlock:^(NXHeaderView *view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {
 
-                      if (dataSource.numberOfSections > 1 && indexPath.section == 0) {
-                            view.label.text = @"Selected Colors";
+                      NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+                      [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+                      NSNumber *selected = [formatter numberFromString:[dataSource itemForSection:indexPath.section]];
+                      
+                      if ([selected boolValue]) {
+                          view.label.text = @"Selected Colors";
                       } else {
                           view.label.text = @"Other Colors";
                       }
+                      
                       view.backgroundColor = [UIColor clearColor];
                       view.label.backgroundColor = [UIColor clearColor];
                       view.label.textColor = [UIColor whiteColor];

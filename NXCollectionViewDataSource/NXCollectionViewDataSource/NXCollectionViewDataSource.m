@@ -138,6 +138,7 @@ NSString * const NXCollectionViewDataSourceCellReuseIdentifier = @"NXCollectionV
 {
     if (collectionView == self.collectionView) {
         UICollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:NXCollectionViewDataSourceCellReuseIdentifier forIndexPath:indexPath];
+        NSAssert([cell.reuseIdentifier isEqualToString:NXCollectionViewDataSourceCellReuseIdentifier], @"Class %@ has been registered with reuse identifier '%@' but has the reuse identifier '%@'. Method -[UICollectionReusableView reuseIdentifier] must not be overloaded by a subclass. ", [cell class], NXCollectionViewDataSourceCellReuseIdentifier, cell.reuseIdentifier);
         if (cell && self.cellPrepareBlock) {
             self.cellPrepareBlock(cell, indexPath, self);
         }
@@ -150,9 +151,9 @@ NSString * const NXCollectionViewDataSourceCellReuseIdentifier = @"NXCollectionV
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath
 {
     if (collectionView == self.collectionView) {
-        NXCollectionViewDataSourcePrepareBlock prepareBlock = self.supplementaryViewPrepareBlock[elementKind];
-        
         UICollectionReusableView *view = [self.collectionView dequeueReusableSupplementaryViewOfKind:elementKind withReuseIdentifier:elementKind forIndexPath:indexPath];
+        NSAssert([view.reuseIdentifier isEqualToString:elementKind], @"Class %@ has been registered with reuse identifier '%@' but has the reuse identifier '%@'. Method -[UICollectionReusableView reuseIdentifier] must not be overloaded by a subclass. ", [view class], elementKind, view.reuseIdentifier);
+        NXCollectionViewDataSourcePrepareBlock prepareBlock = self.supplementaryViewPrepareBlock[elementKind];
         if (view && prepareBlock) {
             prepareBlock(view, indexPath, self);
         }
