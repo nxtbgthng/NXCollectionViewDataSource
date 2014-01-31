@@ -16,6 +16,15 @@ typedef enum {
     NXFetchedCollectionViewDataSourceSectionBehaviourATTRIBUTE
 } NXFetchedCollectionViewDataSourceSectionBehaviour;
 
+@interface NXFetchedCollectionViewDataSourceSectionInfo : NSObject<NSFetchedResultsSectionInfo>
+- (id)initWithName:(NSString *)name indexTitle:(NSString *)indexTitle numberOfObjects:(NSUInteger)numberOfObjects;
+@property (nonatomic, readonly) NSString *name;
+@property (nonatomic, readonly) NSString *indexTitle;
+@property (nonatomic, readonly) NSUInteger numberOfObjects;
+@property (nonatomic, readonly) NSArray *objects;
+@end
+
+
 @interface NXFetchedCollectionViewDataSource () <NSFetchedResultsControllerDelegate>
 #pragma mark Core Data Properties
 @property (nonatomic, readwrite, strong) NSFetchRequest *fetchRequest;
@@ -180,7 +189,7 @@ typedef enum {
         success = [self.fetchedResultsController performFetch:&error];
         NSAssert(success, [error localizedDescription]);
         
-        self.sectionInfos = [self.fetchedResultsController.sections copy];
+        [self updateSectionInfos:self.fetchedResultsController.sections];
     } else {
         self.fetchedResultsController = nil;
         self.sectionInfos = nil;
@@ -425,7 +434,7 @@ typedef enum {
                 [self.collectionView moveItemAtIndexPath:from toIndexPath:to];
             }];
             
-            self.sectionInfos = [self.fetchedResultsController.sections copy];
+            [self updateSectionInfos:self.fetchedResultsController.sections];
         } completion:^(BOOL finished) {
             
         }];
@@ -434,6 +443,34 @@ typedef enum {
             self.postUpdateBlock(self);
         }
     }
+}
+
+- (void)updateSectionInfos:(NSArray *)sectionInfos
+{
+    NSMutableArray *infos = [[NSMutableArray alloc] init];
+    [sectionInfos enumerateObjectsUsingBlock:^(id<NSFetchedResultsSectionInfo> sectionInfo, NSUInteger idx, BOOL *stop) {
+        [infos addObject:[[NXFetchedCollectionViewDataSourceSectionInfo alloc] initWithName:[sectionInfo name]
+                                                                                 indexTitle:[sectionInfo indexTitle]
+                                                                            numberOfObjects:[sectionInfo numberOfObjects]]];
+    }];
+    self.sectionInfos = [infos copy];
+}
+
+@end
+
+#pragma mark -
+
+@implementation NXFetchedCollectionViewDataSourceSectionInfo
+
+- (id)initWithName:(NSString *)name indexTitle:(NSString *)indexTitle numberOfObjects:(NSUInteger)numberOfObjects
+{
+    self = [super init];
+    if (self) {
+        _name = [name copy];
+        _indexTitle = [indexTitle copy];
+        _numberOfObjects = numberOfObjects;
+    }
+    return self;
 }
 
 @end

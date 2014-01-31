@@ -196,9 +196,12 @@
 
 - (void)testUpdatingItems
 {
-    UICollectionView *collectionView = mock([UICollectionView class]);
+    UIWindow *window = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, 1024, 768)];
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:window.bounds collectionViewLayout:[[UICollectionViewFlowLayout alloc] init]];
+    [window addSubview:collectionView];
     
     NXFetchedCollectionViewDataSource *dataSource = [[NXFetchedCollectionViewDataSource alloc] initWithCollectionView:collectionView managedObjectContext:self.managedObjectContext];
+    [dataSource registerClass:[UICollectionViewCell class] withPrepareBlock:^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {}];
     
     __block NSInteger numberOfTimesPostUpdateBlockHasBeenCalled = 0;
     dataSource.postUpdateBlock = ^(NXCollectionViewDataSource *dataSource){ numberOfTimesPostUpdateBlockHasBeenCalled++; };
