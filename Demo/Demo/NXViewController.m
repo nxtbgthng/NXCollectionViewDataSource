@@ -37,17 +37,17 @@
     
     [self.dataSource registerClass:[UICollectionViewCell class]
                   withPrepareBlock:^(UICollectionViewCell *cell, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {
+                      
                       Color *color = [dataSource itemAtIndexPath:indexPath];
                       cell.backgroundColor = [UIColor colorWithRed:color.red green:color.green blue:color.blue alpha:1];
+                      
     }];
     
     [self.dataSource registerClass:[NXHeaderView class]
         forSupplementaryViewOfKind:UICollectionElementKindSectionHeader
                   withPrepareBlock:^(NXHeaderView *view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {
-
-                      NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
-                      [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
-                      NSNumber *selected = [formatter numberFromString:[dataSource itemForSection:indexPath.section]];
+                      
+                      NSNumber *selected = [dataSource itemForSection:indexPath.section];
                       
                       if ([selected boolValue]) {
                           view.label.text = @"Selected Colors";
@@ -63,9 +63,14 @@
                   }];
     
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Color"];
-    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"selected" ascending:NO], [NSSortDescriptor sortDescriptorWithKey:@"red" ascending:NO] ];
+    request.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"selected" ascending:NO],
+                                [NSSortDescriptor sortDescriptorWithKey:@"red" ascending:NO] ];
     
-    [self.dataSource reloadWithFetchRequest:request sectionKeyPath:@"selected"];
+    NSEntityDescription *colorEntity = [NSEntityDescription entityForName:@"Color"
+                                                   inManagedObjectContext:self.managedObjectContext];
+    NSAttributeDescription *attribute = [[colorEntity attributesByName] valueForKey:@"selected"];
+    
+    [self.dataSource reloadWithFetchRequest:request sectionAttributeDescription:attribute];
 }
 
 #pragma mark Actions
