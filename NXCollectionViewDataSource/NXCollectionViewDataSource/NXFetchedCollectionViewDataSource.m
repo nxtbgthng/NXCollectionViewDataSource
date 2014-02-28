@@ -86,7 +86,11 @@ typedef enum {
 
 - (id)itemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [self.fetchedResultsController objectAtIndexPath:indexPath];
+    if (indexPath.section < self.numberOfSections && indexPath.item < [self numberOfItemsInSection:indexPath.section]) {
+        return [self.fetchedResultsController objectAtIndexPath:indexPath];
+    }
+
+    return nil;
 }
 
 - (NSArray *)indexPathsOfItem:(id)item;
