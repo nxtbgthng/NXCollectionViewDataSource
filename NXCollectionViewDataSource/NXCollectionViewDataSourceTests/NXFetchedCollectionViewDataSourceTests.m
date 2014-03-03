@@ -103,12 +103,12 @@
     
     [dataSource reloadWithFetchRequest:request sectionKeyPath:nil];
     
-    XCTAssertEqual([dataSource numberOfSectionsInCollectionView:collectionView], 1);
-    XCTAssertEqual([dataSource collectionView:collectionView numberOfItemsInSection:0], 3);
+    XCTAssertEqual([dataSource numberOfSectionsInCollectionView:collectionView], (NSInteger)1);
+    XCTAssertEqual([dataSource collectionView:collectionView numberOfItemsInSection:0], (NSInteger)3);
     
     [dataSource reset];
     
-    XCTAssertEqual([dataSource numberOfSectionsInCollectionView:collectionView], 0);
+    XCTAssertEqual([dataSource numberOfSectionsInCollectionView:collectionView], (NSInteger)0);
 }
 
 - (void)testGettingItemAndSectionMetrics
@@ -125,10 +125,10 @@
     [dataSource reloadWithFetchRequest:request sectionKeyPath:nil];
     
     NSInteger numberOfSections = [dataSource numberOfSectionsInCollectionView:collectionView];
-    XCTAssertEqual(numberOfSections, 1);
+    XCTAssertEqual(numberOfSections, (NSInteger)1);
     
     NSInteger numberOfItemsInFirstSection = [dataSource collectionView:collectionView numberOfItemsInSection:0];
-    XCTAssertEqual(numberOfItemsInFirstSection, 3);
+    XCTAssertEqual(numberOfItemsInFirstSection, (NSInteger)3);
 }
 
 - (void)testGettingItemAndSectionMetricsWithSectionKeyPath
@@ -145,10 +145,10 @@
     [dataSource reloadWithFetchRequest:request sectionKeyPath:@"uppercaseFirstLetterOfName"];
     
     NSInteger numberOfSections = [dataSource numberOfSectionsInCollectionView:collectionView];
-    XCTAssertEqual(numberOfSections, 2);
+    XCTAssertEqual(numberOfSections, (NSInteger)2);
     
-    XCTAssertEqual([dataSource collectionView:collectionView numberOfItemsInSection:0], 1);
-    XCTAssertEqual([dataSource collectionView:collectionView numberOfItemsInSection:1], 2);
+    XCTAssertEqual([dataSource collectionView:collectionView numberOfItemsInSection:0], (NSInteger)1);
+    XCTAssertEqual([dataSource collectionView:collectionView numberOfItemsInSection:1], (NSInteger)2);
 }
 
 - (void)testGettingItemsAndIndexPaths
@@ -188,7 +188,7 @@
     [dataSource reloadWithFetchRequest:request sectionKeyPath:@"uppercaseFirstLetterOfName"];
     
     NSInteger numberOfSections = [dataSource numberOfSectionsInCollectionView:collectionView];
-    XCTAssertEqual(numberOfSections, 2);
+    XCTAssertEqual(numberOfSections, (NSInteger)2);
     
     XCTAssertEqualObjects([dataSource itemForSection:0], @"M");
     XCTAssertEqualObjects([dataSource itemForSection:1], @"P");
