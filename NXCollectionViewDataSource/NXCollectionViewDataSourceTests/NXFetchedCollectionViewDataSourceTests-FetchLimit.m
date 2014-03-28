@@ -92,7 +92,7 @@
     
     Person *person = [[Person alloc] initWithEntity:entityDescription insertIntoManagedObjectContext:self.managedObjectContext];
     person.name = name;
-    person.age = age;
+    person.age = (int32_t)age;
     
     NSError *error = nil;
     BOOL success = [self.managedObjectContext save:&error];
