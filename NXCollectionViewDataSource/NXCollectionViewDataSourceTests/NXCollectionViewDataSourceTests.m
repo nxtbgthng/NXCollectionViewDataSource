@@ -41,7 +41,7 @@
     NXCollectionViewDataSource *dataSource = [[NXCollectionViewDataSource alloc] initWithCollectionView:collectionView];
     
     NSInteger numberOfSections = [dataSource numberOfSectionsInCollectionView:collectionView];
-    XCTAssertEqual(numberOfSections, 0, @"The base data source should always be empty.");
+    XCTAssertEqual(numberOfSections, (NSInteger)0, @"The base data source should always be empty.");
 }
 
 - (void)testRegisterCellClass

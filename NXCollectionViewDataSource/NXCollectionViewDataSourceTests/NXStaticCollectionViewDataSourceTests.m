@@ -56,7 +56,7 @@
     NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithCollectionView:collectionView];
     
     NSInteger numberOfSections = [dataSource numberOfSectionsInCollectionView:collectionView];
-    XCTAssertEqual(numberOfSections, 0);
+    XCTAssertEqual(numberOfSections, (NSInteger)0);
 }
 
 - (void)testReload
@@ -66,11 +66,11 @@
     NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithCollectionView:collectionView];
     [dataSource reloadWithSections:self.sections sectionItems:self.sectionNames];
     
-    XCTAssertEqual([dataSource numberOfSectionsInCollectionView:collectionView], 3);
+    XCTAssertEqual([dataSource numberOfSectionsInCollectionView:collectionView], (NSInteger)3);
     
     [dataSource reset];
     
-    XCTAssertEqual([dataSource numberOfSectionsInCollectionView:collectionView], 0);
+    XCTAssertEqual([dataSource numberOfSectionsInCollectionView:collectionView], (NSInteger)0);
 }
 
 - (void)testGettingItemAndSectionMetrics
@@ -81,16 +81,16 @@
     [dataSource reloadWithSections:self.sections sectionItems:self.sectionNames];
     
     NSInteger numberOfSections = [dataSource numberOfSectionsInCollectionView:collectionView];
-    XCTAssertEqual(numberOfSections, 3);
+    XCTAssertEqual(numberOfSections, (NSInteger)3);
     
     NSInteger numberOfItemsInFirstSection = [dataSource collectionView:collectionView numberOfItemsInSection:0];
-    XCTAssertEqual(numberOfItemsInFirstSection, 3);
+    XCTAssertEqual(numberOfItemsInFirstSection, (NSInteger)3);
     
     NSInteger numberOfItemsInSecondSection = [dataSource collectionView:collectionView numberOfItemsInSection:1];
-    XCTAssertEqual(numberOfItemsInSecondSection, 3);
+    XCTAssertEqual(numberOfItemsInSecondSection, (NSInteger)3);
     
     NSInteger numberOfItemsInThirdSection = [dataSource collectionView:collectionView numberOfItemsInSection:2];
-    XCTAssertEqual(numberOfItemsInThirdSection, 3);
+    XCTAssertEqual(numberOfItemsInThirdSection, (NSInteger)3);
 }
 
 - (void)testGettingItemAndSectionMetricsWithWrongCollectionView
@@ -100,8 +100,8 @@
     NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithCollectionView:collectionView];
     [dataSource reloadWithSections:self.sections sectionItems:self.sectionNames];
     
-    XCTAssertEqual([dataSource numberOfSectionsInCollectionView:collectionView], 3);
-    XCTAssertEqual([dataSource numberOfSectionsInCollectionView:mock([UICollectionView class])], 0);
+    XCTAssertEqual([dataSource numberOfSectionsInCollectionView:collectionView], (NSInteger)3);
+    XCTAssertEqual([dataSource numberOfSectionsInCollectionView:mock([UICollectionView class])], (NSInteger)0);
 }
 
 - (void)testGettingItemsAndIndexPaths
