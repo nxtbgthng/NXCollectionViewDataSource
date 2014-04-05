@@ -415,9 +415,24 @@ typedef enum {
     // ---------------
     
     if (hasChanges) {
-        
-        if (self.hasOffsetOrLimit) {
-            
+
+        __block BOOL needsReload = self.hasOffsetOrLimit;
+        // WORKAROUND: Workaround a problem in the implementation difference of
+        //             UICollectionView and NSFetchedResultsController
+        [self.deletedItems enumerateObjectsUsingBlock:^(NSIndexPath *indexPath, NSUInteger idx, BOOL *stop) {
+            if (indexPath.section < self.collectionView.numberOfSections) {
+                needsReload = ([self.collectionView numberOfItemsInSection:indexPath.section] == 1);
+                *stop = needsReload;
+            }
+        }];
+        [self.insertedItems enumerateObjectsUsingBlock:^(NSIndexPath *indexPath, NSUInteger idx, BOOL *stop) {
+            if (indexPath.section < self.collectionView.numberOfSections) {
+                needsReload = ([self.collectionView numberOfItemsInSection:indexPath.section] == 0);
+                *stop = needsReload;
+            }
+        }];
+
+        if (needsReload) {
             // WORKAROUND: If the fetch offset or fetch limit is set, the collection view needs to reload,
             //             because the NSFetchedResultsController ignors this while handling the updates.
             
