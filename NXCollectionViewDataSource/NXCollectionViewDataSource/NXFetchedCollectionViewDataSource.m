@@ -355,96 +355,100 @@ typedef enum {
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
-    // Filter Changes
-    // --------------
-    
-    NSIndexSet *insertedSections = [self.insertedSections copy];
-    NSIndexSet *deletedSections = [self.deletedSections copy];
-    
-    NSPredicate *indexPathFilter = [NSPredicate predicateWithBlock:^BOOL(NSIndexPath *indexPath, NSDictionary *bindings) {
+    if (self.reloadCollectionViewAfterChanges) {
+        [self reload];
+    } else {
+        // Filter Changes
+        // --------------
         
-        if ([insertedSections containsIndex:indexPath.section]) {
-            return NO;
-        }
+        NSIndexSet *insertedSections = [self.insertedSections copy];
+        NSIndexSet *deletedSections = [self.deletedSections copy];
         
-        if ([deletedSections containsIndex:indexPath.section]) {
-            return NO;
-        }
-        
-        return YES;
-    }];
-    
-    NSMutableArray *insertedItems = [[self.insertedItems filteredArrayUsingPredicate:indexPathFilter] mutableCopy];
-    NSMutableArray *deletedItems = [[self.deletedItems filteredArrayUsingPredicate:indexPathFilter] mutableCopy];
-    
-    NSArray *movedItems = [self.movedItems filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSArray *move, NSDictionary *bindings) {
-        
-        NSIndexPath *from = [move firstObject];
-        NSIndexPath *to = [move lastObject];
-        
-        // Item comes from a section that has been deleted
-        if ([deletedSections containsIndex:from.section]) {
+        NSPredicate *indexPathFilter = [NSPredicate predicateWithBlock:^BOOL(NSIndexPath *indexPath, NSDictionary *bindings) {
             
-            // … and goes to an exsiting section
-            if ([insertedSections containsIndex:to.section] == NO)
-                [insertedItems addObject:to];
+            if ([insertedSections containsIndex:indexPath.section]) {
+                return NO;
+            }
             
-            return NO;
-        }
-        
-        // Item goes to a section that has been inserted
-        if ([insertedSections containsIndex:to.section]) {
+            if ([deletedSections containsIndex:indexPath.section]) {
+                return NO;
+            }
             
-            // … and comes from an exsiting section
-            if ([deletedSections containsIndex:from.section] == NO)
-                [deletedItems addObject:from];
-            
-            return NO;
-        }
-        
-        return YES;
-    }]];
-    
-    BOOL hasChanges = [insertedSections count] > 0;
-    hasChanges = hasChanges || [deletedSections count] > 0;
-    hasChanges = hasChanges || [insertedItems count] > 0;
-    hasChanges = hasChanges || [deletedItems count] > 0;
-    hasChanges = hasChanges || [movedItems count] > 0;
-    
-    // Perform Changes
-    // ---------------
-    
-    if (hasChanges) {
-        
-        if (self.hasOffsetOrLimit) {
-            
-            // WORKAROUND: If the fetch offset or fetch limit is set, the collection view needs to reload,
-            //             because the NSFetchedResultsController ignors this while handling the updates.
-            
-            [self reload];
-            return;
-        }
-        
-        [self.collectionView performBatchUpdates:^{
-            [self.collectionView deleteSections:deletedSections];
-            [self.collectionView insertSections:insertedSections];
-            
-            [self.collectionView insertItemsAtIndexPaths:insertedItems];
-            [self.collectionView deleteItemsAtIndexPaths:deletedItems];
-            
-            [movedItems enumerateObjectsUsingBlock:^(NSArray *move, NSUInteger idx, BOOL *stop) {
-                NSIndexPath *from = [move objectAtIndex:0];
-                NSIndexPath *to = [move objectAtIndex:1];
-                [self.collectionView moveItemAtIndexPath:from toIndexPath:to];
-            }];
-            
-            [self updateSectionInfos:self.fetchedResultsController.sections];
-        } completion:^(BOOL finished) {
-            
+            return YES;
         }];
         
-        if (self.postUpdateBlock) {
-            self.postUpdateBlock(self);
+        NSMutableArray *insertedItems = [[self.insertedItems filteredArrayUsingPredicate:indexPathFilter] mutableCopy];
+        NSMutableArray *deletedItems = [[self.deletedItems filteredArrayUsingPredicate:indexPathFilter] mutableCopy];
+        
+        NSArray *movedItems = [self.movedItems filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSArray *move, NSDictionary *bindings) {
+            
+            NSIndexPath *from = [move firstObject];
+            NSIndexPath *to = [move lastObject];
+            
+            // Item comes from a section that has been deleted
+            if ([deletedSections containsIndex:from.section]) {
+                
+                // … and goes to an exsiting section
+                if ([insertedSections containsIndex:to.section] == NO)
+                    [insertedItems addObject:to];
+                
+                return NO;
+            }
+            
+            // Item goes to a section that has been inserted
+            if ([insertedSections containsIndex:to.section]) {
+                
+                // … and comes from an exsiting section
+                if ([deletedSections containsIndex:from.section] == NO)
+                    [deletedItems addObject:from];
+                
+                return NO;
+            }
+            
+            return YES;
+        }]];
+        
+        BOOL hasChanges = [insertedSections count] > 0;
+        hasChanges = hasChanges || [deletedSections count] > 0;
+        hasChanges = hasChanges || [insertedItems count] > 0;
+        hasChanges = hasChanges || [deletedItems count] > 0;
+        hasChanges = hasChanges || [movedItems count] > 0;
+        
+        // Perform Changes
+        // ---------------
+        
+        if (hasChanges) {
+            
+            if (self.hasOffsetOrLimit) {
+                
+                // WORKAROUND: If the fetch offset or fetch limit is set, the collection view needs to reload,
+                //             because the NSFetchedResultsController ignors this while handling the updates.
+                
+                [self reload];
+                return;
+            }
+            
+            [self.collectionView performBatchUpdates:^{
+                [self.collectionView deleteSections:deletedSections];
+                [self.collectionView insertSections:insertedSections];
+                
+                [self.collectionView insertItemsAtIndexPaths:insertedItems];
+                [self.collectionView deleteItemsAtIndexPaths:deletedItems];
+                
+                [movedItems enumerateObjectsUsingBlock:^(NSArray *move, NSUInteger idx, BOOL *stop) {
+                    NSIndexPath *from = [move objectAtIndex:0];
+                    NSIndexPath *to = [move objectAtIndex:1];
+                    [self.collectionView moveItemAtIndexPath:from toIndexPath:to];
+                }];
+                
+                [self updateSectionInfos:self.fetchedResultsController.sections];
+            } completion:^(BOOL finished) {
+                
+            }];
+            
+            if (self.postUpdateBlock) {
+                self.postUpdateBlock(self);
+            }
         }
     }
 }
