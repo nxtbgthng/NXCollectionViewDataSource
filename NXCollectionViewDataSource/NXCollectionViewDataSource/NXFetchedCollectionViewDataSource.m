@@ -355,78 +355,83 @@ typedef enum {
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
-    if (self.reloadCollectionViewAfterChanges) {
-        [self reload];
-    } else {
-        // Filter Changes
-        // --------------
+
+    // Filter Changes
+    // --------------
+    
+    NSIndexSet *insertedSections = [self.insertedSections copy];
+    NSIndexSet *deletedSections = [self.deletedSections copy];
+    
+    NSPredicate *indexPathFilter = [NSPredicate predicateWithBlock:^BOOL(NSIndexPath *indexPath, NSDictionary *bindings) {
         
-        NSIndexSet *insertedSections = [self.insertedSections copy];
-        NSIndexSet *deletedSections = [self.deletedSections copy];
+        if ([insertedSections containsIndex:indexPath.section]) {
+            return NO;
+        }
         
-        NSPredicate *indexPathFilter = [NSPredicate predicateWithBlock:^BOOL(NSIndexPath *indexPath, NSDictionary *bindings) {
-            
-            if ([insertedSections containsIndex:indexPath.section]) {
-                return NO;
-            }
-            
-            if ([deletedSections containsIndex:indexPath.section]) {
-                return NO;
-            }
-            
-            return YES;
-        }];
+        if ([deletedSections containsIndex:indexPath.section]) {
+            return NO;
+        }
         
-        NSMutableArray *insertedItems = [[self.insertedItems filteredArrayUsingPredicate:indexPathFilter] mutableCopy];
-        NSMutableArray *deletedItems = [[self.deletedItems filteredArrayUsingPredicate:indexPathFilter] mutableCopy];
+        return YES;
+    }];
+    
+    NSMutableArray *insertedItems = [[self.insertedItems filteredArrayUsingPredicate:indexPathFilter] mutableCopy];
+    NSMutableArray *deletedItems = [[self.deletedItems filteredArrayUsingPredicate:indexPathFilter] mutableCopy];
+    
+    NSArray *movedItems = [self.movedItems filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSArray *move, NSDictionary *bindings) {
         
-        NSArray *movedItems = [self.movedItems filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSArray *move, NSDictionary *bindings) {
-            
-            NSIndexPath *from = [move firstObject];
-            NSIndexPath *to = [move lastObject];
-            
-            // Item comes from a section that has been deleted
-            if ([deletedSections containsIndex:from.section]) {
-                
-                // … and goes to an exsiting section
-                if ([insertedSections containsIndex:to.section] == NO)
-                    [insertedItems addObject:to];
-                
-                return NO;
-            }
-            
-            // Item goes to a section that has been inserted
-            if ([insertedSections containsIndex:to.section]) {
-                
-                // … and comes from an exsiting section
-                if ([deletedSections containsIndex:from.section] == NO)
-                    [deletedItems addObject:from];
-                
-                return NO;
-            }
-            
-            return YES;
-        }]];
+        NSIndexPath *from = [move firstObject];
+        NSIndexPath *to = [move lastObject];
         
-        BOOL hasChanges = [insertedSections count] > 0;
-        hasChanges = hasChanges || [deletedSections count] > 0;
-        hasChanges = hasChanges || [insertedItems count] > 0;
-        hasChanges = hasChanges || [deletedItems count] > 0;
-        hasChanges = hasChanges || [movedItems count] > 0;
-        
-        // Perform Changes
-        // ---------------
-        
-        if (hasChanges) {
+        // Item comes from a section that has been deleted
+        if ([deletedSections containsIndex:from.section]) {
             
-            if (self.hasOffsetOrLimit) {
-                
-                // WORKAROUND: If the fetch offset or fetch limit is set, the collection view needs to reload,
-                //             because the NSFetchedResultsController ignors this while handling the updates.
-                
-                [self reload];
-                return;
-            }
+            // … and goes to an exsiting section
+            if ([insertedSections containsIndex:to.section] == NO)
+                [insertedItems addObject:to];
+            
+            return NO;
+        }
+        
+        // Item goes to a section that has been inserted
+        if ([insertedSections containsIndex:to.section]) {
+            
+            // … and comes from an exsiting section
+            if ([deletedSections containsIndex:from.section] == NO)
+                [deletedItems addObject:from];
+            
+            return NO;
+        }
+        
+        return YES;
+    }]];
+    
+    BOOL hasChanges = [insertedSections count] > 0;
+    hasChanges = hasChanges || [deletedSections count] > 0;
+    hasChanges = hasChanges || [insertedItems count] > 0;
+    hasChanges = hasChanges || [deletedItems count] > 0;
+    hasChanges = hasChanges || [movedItems count] > 0;
+    
+    // Perform Changes
+    // ---------------
+    
+    if (hasChanges) {
+    
+        if (self.hasOffsetOrLimit) {
+            
+            // WORKAROUND: If the fetch offset or fetch limit is set, the collection view needs to reload,
+            //             because the NSFetchedResultsController ignors this while handling the updates.
+            
+            [self reload];
+            return;
+        }
+        
+        if (self.reloadCollectionViewAfterChanges) {
+            
+            [self updateSectionInfos:self.fetchedResultsController.sections];
+            [self.collectionView reloadData];
+            
+        } else {
             
             [self.collectionView performBatchUpdates:^{
                 [self.collectionView deleteSections:deletedSections];
@@ -445,10 +450,10 @@ typedef enum {
             } completion:^(BOOL finished) {
                 
             }];
-            
-            if (self.postUpdateBlock) {
-                self.postUpdateBlock(self);
-            }
+        }
+        
+        if (self.postUpdateBlock) {
+            self.postUpdateBlock(self);
         }
     }
 }
