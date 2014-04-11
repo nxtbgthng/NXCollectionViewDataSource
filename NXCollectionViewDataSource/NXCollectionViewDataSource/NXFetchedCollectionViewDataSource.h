@@ -30,4 +30,7 @@
 - (void)reloadWithFetchRequest:(NSFetchRequest *)fetchRequest sectionAttributeDescription:(NSAttributeDescription *)attributeDescription;
 - (void)reloadWithFetchRequest:(NSFetchRequest *)fetchRequest sectionRelationshipDescription:(NSRelationshipDescription *)relationshipDescription;
 
+#pragma mark Relaod Colelction View
+@property (nonatomic, assign) BOOL reloadCollectionViewAfterChanges;
+
 @end
