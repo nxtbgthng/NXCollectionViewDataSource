@@ -355,6 +355,7 @@ typedef enum {
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
 {
+
     // Filter Changes
     // --------------
     
@@ -415,7 +416,7 @@ typedef enum {
     // ---------------
     
     if (hasChanges) {
-        
+    
         if (self.hasOffsetOrLimit) {
             
             // WORKAROUND: If the fetch offset or fetch limit is set, the collection view needs to reload,
@@ -425,23 +426,31 @@ typedef enum {
             return;
         }
         
-        [self.collectionView performBatchUpdates:^{
-            [self.collectionView deleteSections:deletedSections];
-            [self.collectionView insertSections:insertedSections];
-            
-            [self.collectionView insertItemsAtIndexPaths:insertedItems];
-            [self.collectionView deleteItemsAtIndexPaths:deletedItems];
-            
-            [movedItems enumerateObjectsUsingBlock:^(NSArray *move, NSUInteger idx, BOOL *stop) {
-                NSIndexPath *from = [move objectAtIndex:0];
-                NSIndexPath *to = [move objectAtIndex:1];
-                [self.collectionView moveItemAtIndexPath:from toIndexPath:to];
-            }];
+        if (self.reloadCollectionViewAfterChanges) {
             
             [self updateSectionInfos:self.fetchedResultsController.sections];
-        } completion:^(BOOL finished) {
+            [self.collectionView reloadData];
             
-        }];
+        } else {
+            
+            [self.collectionView performBatchUpdates:^{
+                [self.collectionView deleteSections:deletedSections];
+                [self.collectionView insertSections:insertedSections];
+                
+                [self.collectionView insertItemsAtIndexPaths:insertedItems];
+                [self.collectionView deleteItemsAtIndexPaths:deletedItems];
+                
+                [movedItems enumerateObjectsUsingBlock:^(NSArray *move, NSUInteger idx, BOOL *stop) {
+                    NSIndexPath *from = [move objectAtIndex:0];
+                    NSIndexPath *to = [move objectAtIndex:1];
+                    [self.collectionView moveItemAtIndexPath:from toIndexPath:to];
+                }];
+                
+                [self updateSectionInfos:self.fetchedResultsController.sections];
+            } completion:^(BOOL finished) {
+                
+            }];
+        }
         
         if (self.postUpdateBlock) {
             self.postUpdateBlock(self);
