@@ -58,7 +58,7 @@ typedef void(^NXCollectionViewDataSourcePostUpdateBlock)(NXCollectionViewDataSou
  */
 - (void)registerNib:(UINib *)nib withReuseIdentifier:(NSString *)reuseIdentifier forItemsMatchingPredicate:(NSPredicate *)predicate withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock;
 
-/*! A convenince method that registers the given cellClass with a "allways YES" predicate and a static reuseIdentifer. You may use that method to register a default/fallback 
+/*! A convenince method that registers the given cellClass with a "always YES" predicate and a static reuseIdentifer. You may use that method to register a default/fallback
     cellClass by calling it in the end, after any other cellClass has been registered. You can also use it, to have allways the same cellClass for every item in the collection view.
  
     @param cellClass The class of a cell that you want to use in the collection view.
@@ -66,7 +66,7 @@ typedef void(^NXCollectionViewDataSourcePostUpdateBlock)(NXCollectionViewDataSou
  */
 - (void)registerClass:(Class)cellClass withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock;
 
-/*! A convenince method that registers the given cellClass with a "allways YES" predicate and a static reuseIdentifer. You may use that method to register a default/fallback
+/*! A convenince method that registers the given cellClass with a "always YES" predicate and a static reuseIdentifer. You may use that method to register a default/fallback
     cellClass by calling it in the end, after any other cellClass has been registered. You can also use it, to have allways the same cellClass for every item in the collection view.
  
     @param nib The Nib of a cell that you want to use in the collection view.

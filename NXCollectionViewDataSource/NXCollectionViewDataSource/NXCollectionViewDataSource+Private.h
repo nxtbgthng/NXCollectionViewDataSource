@@ -13,7 +13,7 @@ extern NSString * const NXCollectionViewDataSourceCellReuseIdentifier;
 @interface NXCollectionViewDataSource (Private)
 
 #pragma mark Cell Predicates & Prepare Blocks
-@property (nonatomic, readonly) NSMutableDictionary *predicates;
+@property (nonatomic, readonly) NSMutableArray *predicateWrappers;
 @property (nonatomic, readonly) NSMutableDictionary *prepareBlocks;
 
 #pragma mark Supplementary View Prepare Block

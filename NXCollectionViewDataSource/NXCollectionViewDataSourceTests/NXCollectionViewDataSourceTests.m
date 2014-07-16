@@ -58,9 +58,8 @@
     [verifyCount(collectionView, times(1)) registerClass:[UICollectionViewCell class]
                               forCellWithReuseIdentifier:@"test123"];
     
-    // The data source sould keep track of the prepare block, the predicate and the reuse identifier.
+    // The data source sould keep track of the prepare block and the reuse identifier.
     XCTAssertEqual((NXCollectionViewDataSourcePrepareBlock)[dataSource.prepareBlocks objectForKey:@"test123"], cellPrepareBlock);
-    XCTAssertEqual((NSPredicate *)[dataSource.predicates objectForKey:@"test123"], predicate);
 }
 
 - (void)testRegisterCellNib
@@ -81,7 +80,6 @@
     
     // The data source sould keep track of the prepare block and the reuse identifier.
     XCTAssertEqual((NXCollectionViewDataSourcePrepareBlock)[dataSource.prepareBlocks objectForKey:@"test123"], cellPrepareBlock);
-    XCTAssertEqual((NSPredicate *)[dataSource.predicates objectForKey:@"test123"], predicate);
 }
 
 - (void)testRegisterSupplementaryViewClasses
