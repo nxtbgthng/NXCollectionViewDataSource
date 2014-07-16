@@ -34,13 +34,44 @@ typedef void(^NXCollectionViewDataSourcePostUpdateBlock)(NXCollectionViewDataSou
 @property (nonatomic, readonly, weak) UICollectionView *collectionView;
 
 #pragma mark Register Cell and Supplementary View Classes
+/*! Registers a Class used to create the cells for the collection view, for items that match a specific predicate.
+ 
+    @param cellClass        The class of a cell that you want to use in the collection view.
+    @param reuseIdentifier  The reuseIdentifier that is used to register the given cellClass at (and dequeue a view from) the collection view. If a reuseIdentifer is used
+                            twice, the old cellClass, predicate und prepareBlock will be overridden.
+    @param predicate        A predicate that is used to determine for which items the given cellClass is used. Every predicate will be collected with the given reuseIdentifier.
+                            All collected predicates will be iterated in the same order as they were registered. While generating the cells for the collection view, the first 
+                            predicate/reuseIdentifier-pair that matches to the current item will be used for dequeuing the correct cell view from the collection view.
+    @param prepareBlock     A Block which is called to prepare the view. This block is called after the data source internaly dequeues the view.
+ */
+- (void)registerClass:(Class)cellClass withReuseIdentifier:(NSString *)reuseIdentifier forItemsMatchingPredicate:(NSPredicate *)predicate withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock;
 
-/*! Registers a Class used to create the cells for the collection view.
+/*! Registers a Nib used to create the cells for the collection view, for items that match a specific predicate.
+ 
+    @param nib              The Nib of a cell that you want to use in the collection view.
+    @param reuseIdentifier  The reuseIdentifier that is used to register the given cellClass at (and dequeue a view from) the collection view. If a reuseIdentifer is used
+                            twice, the old cellClass, predicate und prepareBlock will be overridden.
+    @param predicate        A predicate that is used to determine for which items the given cellClass is used. Every predicate will be collected with the given reuseIdentifier.
+                            All collected predicates will be iterated in the same order as they were registered. While generating the cells for the collection view, the first
+                            predicate/reuseIdentifier-pair that matches to the current item will be used for dequeuing the correct cell view from the collection view.
+    @param prepareBlock     A Block which is called to prepare the view. This block is called after the data source internaly dequeues the view.
+ */
+- (void)registerNib:(UINib *)nib withReuseIdentifier:(NSString *)reuseIdentifier forItemsMatchingPredicate:(NSPredicate *)predicate withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock;
+
+/*! A convenince method that registers the given cellClass with a "allways YES" predicate and a static reuseIdentifer. You may use that method to register a default/fallback 
+    cellClass by calling it in the end, after any other cellClass has been registered. You can also use it, to have allways the same cellClass for every item in the collection view.
  
     @param cellClass The class of a cell that you want to use in the collection view.
     @param prepareBlock A Block which is called to prepare the cell. This block is called after the data source internaly dequeues the cell.
  */
 - (void)registerClass:(Class)cellClass withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock;
+
+/*! A convenince method that registers the given cellClass with a "allways YES" predicate and a static reuseIdentifer. You may use that method to register a default/fallback
+    cellClass by calling it in the end, after any other cellClass has been registered. You can also use it, to have allways the same cellClass for every item in the collection view.
+ 
+    @param nib The Nib of a cell that you want to use in the collection view.
+    @param prepareBlock A Block which is called to prepare the cell. This block is called after the data source internaly dequeues the cell.
+ */
 - (void)registerNib:(UINib *)nib withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock;
 
 
