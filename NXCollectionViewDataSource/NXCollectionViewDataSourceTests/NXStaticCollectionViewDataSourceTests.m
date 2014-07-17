@@ -17,6 +17,24 @@
 #import "NXStaticCollectionViewDataSource.h"
 #import "NXCollectionViewDataSource+Private.h"
 
+@interface NXDummyCollectionViewCellTestA : UICollectionViewCell
+@end
+@implementation NXDummyCollectionViewCellTestA
+    -(NSString *)reuseIdentifier
+    {
+        return @"testA";
+    }
+@end
+
+@interface NXDummyCollectionViewCellTestB : UICollectionViewCell
+@end
+@implementation NXDummyCollectionViewCellTestB
+    -(NSString *)reuseIdentifier
+    {
+        return @"testB";
+    }
+@end
+
 @interface NXStaticCollectionViewDataSourceTests : XCTestCase
 @property (nonatomic, strong) NSArray *sectionNames;
 @property (nonatomic, strong) NSArray *sections;
@@ -213,6 +231,45 @@
     
     XCTAssertEqualObjects([dataSource itemAtIndexPath:indexPath], item);
     XCTAssertEqualObjects([dataSource indexPathsOfItem:item], @[indexPath]);
+}
+
+- (void)testRegisterCellsWithPredicate
+{
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, 200, 200) collectionViewLayout:[[UICollectionViewFlowLayout alloc] init]];
+    
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    [dataSource reloadWithSections:self.sections sectionItems:self.sectionNames];
+    
+    NSIndexPath *indexPath1 = [NSIndexPath indexPathForItem:1 inSection:1];
+    NSIndexPath *indexPath2 = [NSIndexPath indexPathForItem:2 inSection:2];
+    
+    //Predicates
+    NSPredicate *predicate1 = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return [(NSString *)evaluatedObject isEqualToString:@"Baz_baz"];
+    }];
+    
+    NSPredicate *predicate2 = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return YES;
+    }];
+    
+    //Prepare Blocks
+    __block BOOL prepareBlock1Called = NO;
+    __block BOOL prepareBlock2Called = NO;
+    NXCollectionViewDataSourcePrepareBlock cellPrepareBlock1 = ^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {
+        prepareBlock1Called = YES;
+    };
+    NXCollectionViewDataSourcePrepareBlock cellPrepareBlock2 = ^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {
+        prepareBlock2Called = YES;
+    };
+    
+    [dataSource registerClass:[NXDummyCollectionViewCellTestA class] withReuseIdentifier:@"testA" forItemsMatchingPredicate:predicate1 withPrepareBlock:cellPrepareBlock1];
+    [dataSource registerClass:[NXDummyCollectionViewCellTestB class] withReuseIdentifier:@"testB" forItemsMatchingPredicate:predicate2 withPrepareBlock:cellPrepareBlock2];
+    
+    [dataSource collectionView:collectionView cellForItemAtIndexPath:indexPath1];
+    [dataSource collectionView:collectionView cellForItemAtIndexPath:indexPath2];
+    
+    XCTAssertTrue(prepareBlock1Called, @"The first prepareBlock must be called");
+    XCTAssertTrue(prepareBlock2Called, @"The second prepareBlock must be called");
 }
 
 @end

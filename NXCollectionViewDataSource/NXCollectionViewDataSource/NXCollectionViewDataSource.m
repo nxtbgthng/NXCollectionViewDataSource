@@ -11,11 +11,40 @@
 
 NSString * const NXCollectionViewDataSourceCellReuseIdentifier = @"NXCollectionViewDataSourceCellReuseIdentifier";
 
+@interface NXCollectionViewDataSourcePredicateWrapper : NSObject
+
+@property (nonatomic, readonly) NSString *reuseIdentifier;
+@property (nonatomic, readonly) NSPredicate *predicate;
+
+- (id)initWithPredicate:(NSPredicate *)predicate reuseIdentifier:(NSString *)reuseIdentifier;
+
+@end
+
+@implementation NXCollectionViewDataSourcePredicateWrapper
+
+-(id)initWithPredicate:(NSPredicate *)predicate reuseIdentifier:(NSString *)reuseIdentifier
+{
+    NSParameterAssert(predicate);
+    NSParameterAssert(reuseIdentifier);
+    self = [super init];
+    if (self) {
+        _reuseIdentifier = reuseIdentifier;
+        _predicate = predicate;
+    }
+    return self;
+}
+
+@end
+
 @interface NXCollectionViewDataSource ()
-@property (nonatomic, readwrite, strong) NXCollectionViewDataSourcePrepareBlock cellPrepareBlock;
+
+#pragma mark Cell Predicates & Prepare Blocks
+@property (nonatomic, readonly) NSMutableArray *predicateWrappers;
+@property (nonatomic, readonly) NSMutableDictionary *prepareBlocks;
 
 #pragma mark Collection View Supplementary View
 @property (nonatomic, readonly) NSMutableDictionary *supplementaryViewPrepareBlock;
+
 @end
 
 @implementation NXCollectionViewDataSource
@@ -30,22 +59,45 @@ NSString * const NXCollectionViewDataSourceCellReuseIdentifier = @"NXCollectionV
         _collectionView.dataSource = self;
         
         _supplementaryViewPrepareBlock = [[NSMutableDictionary alloc] init];
+        
+        _predicateWrappers = [NSMutableArray array];
+        _prepareBlocks = [NSMutableDictionary dictionary];
     }
     return self;
 }
 
 #pragma mark Register Cell and Supplementary View Classes
 
+- (void)registerClass:(Class)cellClass withReuseIdentifier:(NSString *)reuseIdentifier forItemsMatchingPredicate:(NSPredicate *)predicate withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock
+{
+    if (cellClass) {
+        [self setPredicate:predicate andPrepareBlock:prepareBlock forReuseIdentifier:reuseIdentifier];
+    } else {
+        [self removePredicateAndPrepareBlockForReuseIdentifier:reuseIdentifier];
+    }
+    
+    [self.collectionView registerClass:cellClass forCellWithReuseIdentifier:reuseIdentifier];
+}
+
+- (void)registerNib:(UINib *)nib withReuseIdentifier:(NSString *)reuseIdentifier forItemsMatchingPredicate:(NSPredicate *)predicate withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock
+{
+    if (nib) {
+        [self setPredicate:predicate andPrepareBlock:prepareBlock forReuseIdentifier:reuseIdentifier];
+    } else {
+        [self removePredicateAndPrepareBlockForReuseIdentifier:reuseIdentifier];
+    }
+    
+    [self.collectionView registerNib:nib forCellWithReuseIdentifier:reuseIdentifier];
+}
+
 - (void)registerClass:(Class)cellClass withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock
 {
-    self.cellPrepareBlock = prepareBlock;
-    [self.collectionView registerClass:cellClass forCellWithReuseIdentifier:NXCollectionViewDataSourceCellReuseIdentifier];
+    [self registerClass:cellClass withReuseIdentifier:NXCollectionViewDataSourceCellReuseIdentifier forItemsMatchingPredicate:[NSPredicate predicateWithValue:YES] withPrepareBlock:prepareBlock];
 }
 
 - (void)registerNib:(UINib *)nib withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock
 {
-    self.cellPrepareBlock = prepareBlock;
-    [self.collectionView registerNib:nib forCellWithReuseIdentifier:NXCollectionViewDataSourceCellReuseIdentifier];
+    [self registerNib:nib withReuseIdentifier:NXCollectionViewDataSourceCellReuseIdentifier forItemsMatchingPredicate:[NSPredicate predicateWithValue:YES] withPrepareBlock:prepareBlock];
 }
 
 - (void)registerClass:(Class)viewClass forSupplementaryViewOfKind:(NSString *)elementKind withPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock
@@ -66,6 +118,53 @@ NSString * const NXCollectionViewDataSourceCellReuseIdentifier = @"NXCollectionV
         [self.supplementaryViewPrepareBlock removeObjectForKey:elementKind];
     }
     [self.collectionView registerNib:nib forSupplementaryViewOfKind:elementKind withReuseIdentifier:elementKind];
+}
+
+
+#pragma mark Manage Predicates & Prepare-Blocks
+- (NXCollectionViewDataSourcePredicateWrapper *)lookupExistingPredicateWrapperForReuseIdentifier:(NSString *)reuseIdentifier
+{
+    for(NXCollectionViewDataSourcePredicateWrapper *tmpWrapper in self.predicateWrappers) {
+        if ([tmpWrapper.reuseIdentifier isEqualToString:reuseIdentifier]) {
+            return tmpWrapper;
+        }
+    }
+    return nil;
+}
+
+- (void)setPredicate:(NSPredicate *)predicate andPrepareBlock:(NXCollectionViewDataSourcePrepareBlock)prepareBlock forReuseIdentifier:(NSString *)reuseIdentifier
+{
+    NXCollectionViewDataSourcePredicateWrapper *newWrapper = [[NXCollectionViewDataSourcePredicateWrapper alloc] initWithPredicate:predicate reuseIdentifier:reuseIdentifier];
+    
+    //Remove if Wrapper for reuseIdentifier already exists
+    NXCollectionViewDataSourcePredicateWrapper *existingWrapper = [self lookupExistingPredicateWrapperForReuseIdentifier:reuseIdentifier];
+    if (existingWrapper) {
+        [self.predicateWrappers removeObject:existingWrapper];
+    }
+    
+    [self.predicateWrappers addObject:newWrapper];
+    [self.prepareBlocks setObject:prepareBlock forKey:reuseIdentifier];
+}
+
+- (void)removePredicateAndPrepareBlockForReuseIdentifier:(NSString *)reuseIdentifier
+{
+    NXCollectionViewDataSourcePredicateWrapper *existingWrapper = [self lookupExistingPredicateWrapperForReuseIdentifier:reuseIdentifier];
+    if (existingWrapper) {
+        [self.predicateWrappers removeObject:existingWrapper];
+        [self.prepareBlocks removeObjectForKey:reuseIdentifier];
+    }
+}
+
+- (NSString *)reuseIdentifierForItem:(id)item
+{
+    if (item) {
+        for(NXCollectionViewDataSourcePredicateWrapper *tmpWrapper in self.predicateWrappers) {
+            if ([tmpWrapper.predicate evaluateWithObject:item]) {
+                return tmpWrapper.reuseIdentifier;
+            }
+        }
+    }
+    return nil;
 }
 
 #pragma mark Getting Item and Section Metrics
@@ -137,15 +236,21 @@ NSString * const NXCollectionViewDataSourceCellReuseIdentifier = @"NXCollectionV
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if (collectionView == self.collectionView) {
-        UICollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:NXCollectionViewDataSourceCellReuseIdentifier forIndexPath:indexPath];
-        NSAssert([cell.reuseIdentifier isEqualToString:NXCollectionViewDataSourceCellReuseIdentifier], @"Class %@ has been registered with reuse identifier '%@' but has the reuse identifier '%@'. Method -[UICollectionReusableView reuseIdentifier] must not be overloaded by a subclass. ", [cell class], NXCollectionViewDataSourceCellReuseIdentifier, cell.reuseIdentifier);
-        if (cell && self.cellPrepareBlock) {
-            self.cellPrepareBlock(cell, indexPath, self);
+        NSString *reuseIdentifier = [self reuseIdentifierForItem:[self itemAtIndexPath:indexPath]];
+        if (reuseIdentifier) {
+            UICollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
+            NSAssert([cell.reuseIdentifier isEqualToString:reuseIdentifier], @"Class %@ has been registered with reuse identifier '%@' but has the reuse identifier '%@'. Method -[UICollectionReusableView reuseIdentifier] must not be overloaded by a subclass. ", [cell class], reuseIdentifier, cell.reuseIdentifier);
+            
+            //Get and call the prepare block
+            NXCollectionViewDataSourcePrepareBlock prepareBlock = [self.prepareBlocks objectForKey:reuseIdentifier];
+            if (cell && prepareBlock) {
+                prepareBlock(cell, indexPath, self);
+            }
+            
+            return cell;
         }
-        return cell;
-    } else {
-        return nil;
     }
+    return nil;
 }
 
 - (UICollectionReusableView *)collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)elementKind atIndexPath:(NSIndexPath *)indexPath

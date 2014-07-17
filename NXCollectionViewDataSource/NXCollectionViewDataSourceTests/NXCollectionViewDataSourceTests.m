@@ -49,16 +49,17 @@
     UICollectionView *collectionView = mock([UICollectionView class]);
     NXCollectionViewDataSource *dataSource = [[NXCollectionViewDataSource alloc] initWithCollectionView:collectionView];
 
+    NSPredicate *predicate = [NSPredicate predicateWithValue:YES];
     NXCollectionViewDataSourcePrepareBlock cellPrepareBlock = ^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {};
     
-    [dataSource registerClass:[UICollectionViewCell class] withPrepareBlock:cellPrepareBlock];
+    [dataSource registerClass:[UICollectionViewCell class] withReuseIdentifier:@"test123" forItemsMatchingPredicate:predicate withPrepareBlock:cellPrepareBlock];
     
     // The class should be registerd in the collection view.
     [verifyCount(collectionView, times(1)) registerClass:[UICollectionViewCell class]
-                              forCellWithReuseIdentifier:NXCollectionViewDataSourceCellReuseIdentifier];
+                              forCellWithReuseIdentifier:@"test123"];
     
     // The data source sould keep track of the prepare block and the reuse identifier.
-    XCTAssertEqual(dataSource.cellPrepareBlock, cellPrepareBlock);
+    XCTAssertEqual((NXCollectionViewDataSourcePrepareBlock)[dataSource.prepareBlocks objectForKey:@"test123"], cellPrepareBlock);
 }
 
 - (void)testRegisterCellNib
@@ -66,18 +67,19 @@
     UICollectionView *collectionView = mock([UICollectionView class]);
     NXCollectionViewDataSource *dataSource = [[NXCollectionViewDataSource alloc] initWithCollectionView:collectionView];
     
+    NSPredicate *predicate = [NSPredicate predicateWithValue:YES];
     NXCollectionViewDataSourcePrepareBlock cellPrepareBlock = ^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {};
     
     UINib *nib = [[UINib alloc] init];
     
-    [dataSource registerNib:nib withPrepareBlock:cellPrepareBlock];
+    [dataSource registerNib:nib withReuseIdentifier:@"test123" forItemsMatchingPredicate:predicate withPrepareBlock:cellPrepareBlock];
     
     // The class should be registerd in the collection view.
     [verifyCount(collectionView, times(1)) registerNib:nib
-                              forCellWithReuseIdentifier:NXCollectionViewDataSourceCellReuseIdentifier];
+                              forCellWithReuseIdentifier:@"test123"];
     
     // The data source sould keep track of the prepare block and the reuse identifier.
-    XCTAssertEqual(dataSource.cellPrepareBlock, cellPrepareBlock);
+    XCTAssertEqual((NXCollectionViewDataSourcePrepareBlock)[dataSource.prepareBlocks objectForKey:@"test123"], cellPrepareBlock);
 }
 
 - (void)testRegisterSupplementaryViewClasses
