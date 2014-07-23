@@ -272,4 +272,86 @@
     XCTAssertTrue(prepareBlock2Called, @"The second prepareBlock must be called");
 }
 
+- (void)testPredicateWithSection
+{
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, 200, 200) collectionViewLayout:[[UICollectionViewFlowLayout alloc] init]];
+    
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    [dataSource reloadWithSections:self.sections sectionItems:self.sectionNames];
+    
+    NSIndexPath *indexPath1 = [NSIndexPath indexPathForItem:1 inSection:1];
+    NSIndexPath *indexPath2 = [NSIndexPath indexPathForItem:1 inSection:2];
+    
+    //Predicates
+    NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"$SECTION == 1"];
+    
+    NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"$SECTION == 2"];
+    
+    //Prepare Blocks
+    __block BOOL prepareBlock1Called = NO;
+    __block BOOL prepareBlock2Called = NO;
+    NXCollectionViewDataSourcePrepareBlock cellPrepareBlock1 = ^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {
+        prepareBlock1Called = YES;
+    };
+    NXCollectionViewDataSourcePrepareBlock cellPrepareBlock2 = ^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {
+        prepareBlock2Called = YES;
+    };
+    
+    [dataSource registerClass:[NXDummyCollectionViewCellTestA class] withReuseIdentifier:@"testA" forItemsMatchingPredicate:predicate1 withPrepareBlock:cellPrepareBlock1];
+    [dataSource registerClass:[NXDummyCollectionViewCellTestB class] withReuseIdentifier:@"testB" forItemsMatchingPredicate:predicate2 withPrepareBlock:cellPrepareBlock2];
+    
+    [dataSource collectionView:collectionView cellForItemAtIndexPath:indexPath1];
+    XCTAssertTrue(prepareBlock1Called);
+    XCTAssertFalse(prepareBlock2Called);
+    
+    
+    prepareBlock1Called = NO;
+    prepareBlock2Called = NO;
+    [dataSource collectionView:collectionView cellForItemAtIndexPath:indexPath2];
+    
+    XCTAssertFalse(prepareBlock1Called);
+    XCTAssertTrue(prepareBlock2Called);
+}
+
+- (void)testPredicateWithItem
+{
+    UICollectionView *collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, 200, 200) collectionViewLayout:[[UICollectionViewFlowLayout alloc] init]];
+    
+    NXStaticCollectionViewDataSource *dataSource = [[NXStaticCollectionViewDataSource alloc] initWithCollectionView:collectionView];
+    [dataSource reloadWithSections:self.sections sectionItems:self.sectionNames];
+    
+    NSIndexPath *indexPath1 = [NSIndexPath indexPathForItem:1 inSection:2];
+    NSIndexPath *indexPath2 = [NSIndexPath indexPathForItem:2 inSection:2];
+    
+    //Predicates
+    NSPredicate *predicate1 = [NSPredicate predicateWithFormat:@"$ITEM == 1"];
+    
+    NSPredicate *predicate2 = [NSPredicate predicateWithFormat:@"$ITEM == 2"];
+    
+    //Prepare Blocks
+    __block BOOL prepareBlock1Called = NO;
+    __block BOOL prepareBlock2Called = NO;
+    NXCollectionViewDataSourcePrepareBlock cellPrepareBlock1 = ^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {
+        prepareBlock1Called = YES;
+    };
+    NXCollectionViewDataSourcePrepareBlock cellPrepareBlock2 = ^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {
+        prepareBlock2Called = YES;
+    };
+    
+    [dataSource registerClass:[NXDummyCollectionViewCellTestA class] withReuseIdentifier:@"testA" forItemsMatchingPredicate:predicate1 withPrepareBlock:cellPrepareBlock1];
+    [dataSource registerClass:[NXDummyCollectionViewCellTestB class] withReuseIdentifier:@"testB" forItemsMatchingPredicate:predicate2 withPrepareBlock:cellPrepareBlock2];
+    
+    [dataSource collectionView:collectionView cellForItemAtIndexPath:indexPath1];
+    XCTAssertTrue(prepareBlock1Called);
+    XCTAssertFalse(prepareBlock2Called);
+    
+    
+    prepareBlock1Called = NO;
+    prepareBlock2Called = NO;
+    [dataSource collectionView:collectionView cellForItemAtIndexPath:indexPath2];
+    
+    XCTAssertFalse(prepareBlock1Called);
+    XCTAssertTrue(prepareBlock2Called);
+}
+
 @end
