@@ -122,6 +122,7 @@ NSString * const NXCollectionViewDataSourceCellReuseIdentifier = @"NXCollectionV
 
 
 #pragma mark Manage Predicates & Prepare-Blocks
+
 - (NXCollectionViewDataSourcePredicateWrapper *)lookupExistingPredicateWrapperForReuseIdentifier:(NSString *)reuseIdentifier
 {
     for(NXCollectionViewDataSourcePredicateWrapper *tmpWrapper in self.predicateWrappers) {
@@ -155,11 +156,15 @@ NSString * const NXCollectionViewDataSourceCellReuseIdentifier = @"NXCollectionV
     }
 }
 
-- (NSString *)reuseIdentifierForItem:(id)item
+- (NSString *)reuseIdentifierForItem:(id)item atIndexPath:(NSIndexPath *)indexPath
 {
     if (item) {
-        for(NXCollectionViewDataSourcePredicateWrapper *tmpWrapper in self.predicateWrappers) {
-            if ([tmpWrapper.predicate evaluateWithObject:item]) {
+        for (NXCollectionViewDataSourcePredicateWrapper *tmpWrapper in self.predicateWrappers) {
+            
+            NSDictionary *substitutionVariables = @{@"SECTION": @(indexPath.section),
+                                                    @"ITEM":    @(indexPath.item)};
+            
+            if ([tmpWrapper.predicate evaluateWithObject:item substitutionVariables:substitutionVariables]) {
                 return tmpWrapper.reuseIdentifier;
             }
         }
@@ -236,7 +241,7 @@ NSString * const NXCollectionViewDataSourceCellReuseIdentifier = @"NXCollectionV
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if (collectionView == self.collectionView) {
-        NSString *reuseIdentifier = [self reuseIdentifierForItem:[self itemAtIndexPath:indexPath]];
+        NSString *reuseIdentifier = [self reuseIdentifierForItem:[self itemAtIndexPath:indexPath] atIndexPath:indexPath];
         if (reuseIdentifier) {
             UICollectionViewCell *cell = [self.collectionView dequeueReusableCellWithReuseIdentifier:reuseIdentifier forIndexPath:indexPath];
             NSAssert([cell.reuseIdentifier isEqualToString:reuseIdentifier], @"Class %@ has been registered with reuse identifier '%@' but has the reuse identifier '%@'. Method -[UICollectionReusableView reuseIdentifier] must not be overloaded by a subclass. ", [cell class], reuseIdentifier, cell.reuseIdentifier);
