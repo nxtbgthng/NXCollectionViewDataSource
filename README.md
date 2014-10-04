@@ -23,9 +23,9 @@ A static data soruce just takes the collection view as argument, a fetched data 
 	                                                      managedObjectContext:self.managedObjectContext];
 	                                                      
 
-### Registering Cells and Supplementaty Views
+### Registering Cells and Supplementary Views
 
-Cells and supplementaty views can either be registerd with a class or a nib. The registration is done together with a prepare block. This block is called for preparation and can be used to get the item from the data source and set it as a value of the cell (or supplementaty view).
+Cells and supplementary views can either be registerd with a class or a nib. The registration is done together with a prepare block. This block is called for preparation and can be used to get the item from the data source and set it as a value of the cell (or supplementary view).
 
 	[dataSource registerClass:[MyCollectionViewCell class]    
 	         withPrepareBlock:^(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource) {
@@ -56,7 +56,7 @@ After preparing the data source, it has to be reloaded. this initially populated
 
 In addition to sections defined by a key path, the fetched data source can also group the result by attributes or relationships and returns the expected value as object of the coresponding type. This allows for example to group items by a date property of type NSDate and have an NSDate object as section item.
 
-Using a relationship for the section allows grouping by that relatinship and also accessing this object in the supplementaty view for the section header. This can for example be used to show a list of persons and section them by there relation to a group. The sectin header can than show details about that group.
+Using a relationship for the section allows grouping by that relatinship and also accessing this object in the supplementary view for the section header. This can for example be used to show a list of persons and section them by there relation to a group. The sectin header can than show details about that group.
 
     
     // Create a requet and sort the result by the group name.
