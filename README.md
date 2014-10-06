@@ -5,7 +5,7 @@ This project provides generic data source classes for `UICollectionView`. The `N
 
 ## General Usage
 
-The data source must be initialized with the colelction view, it should manage. From this point, the control over the collection view is handed over to the data source and the methods to insert, move or delete cells must not be called manually.
+The data source must be initialized with the collection view, it should manage. From this point, the control over the collection view is handed over to the data source and the methods to insert, move or delete cells must not be called manually.
 
 ### Creating a Data Source
 
