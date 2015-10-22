@@ -222,7 +222,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = NX;
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "nxtbgthng GmbH";
 				TargetAttributes = {
 					F610E0A8189147B000F31814 = {
@@ -351,6 +351,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -370,7 +371,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"${SRCROOT}/../NXCollectionViewDataSource",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -408,7 +409,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"${SRCROOT}/../NXCollectionViewDataSource",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;
@@ -424,6 +425,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Demo/Demo-Prefix.pch";
 				INFOPLIST_FILE = "Demo/Demo-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nxtbghtng.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Colors;
 				WRAPPER_EXTENSION = app;
 			};
@@ -438,6 +440,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Demo/Demo-Prefix.pch";
 				INFOPLIST_FILE = "Demo/Demo-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nxtbghtng.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Colors;
 				WRAPPER_EXTENSION = app;
 			};
@@ -459,6 +462,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "DemoTests/DemoTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nxtbghtng.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -477,6 +481,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Demo/Demo-Prefix.pch";
 				INFOPLIST_FILE = "DemoTests/DemoTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nxtbghtng.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;

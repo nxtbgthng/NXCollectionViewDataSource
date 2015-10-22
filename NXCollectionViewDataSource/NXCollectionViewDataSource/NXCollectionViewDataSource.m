@@ -51,8 +51,10 @@ NSString * const NXCollectionViewDataSourceCellReuseIdentifier = @"NXCollectionV
 
 #pragma mark Life-cycle
 
-- (id)initWithCollectionView:(UICollectionView *)collectionView;
+- (instancetype)initWithCollectionView:(UICollectionView *)collectionView;
 {
+    NSParameterAssert(collectionView);
+    
     self = [super  init];
     if (self) {
         _collectionView = collectionView;
