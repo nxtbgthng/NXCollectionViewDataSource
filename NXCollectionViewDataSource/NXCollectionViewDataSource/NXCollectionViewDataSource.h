@@ -11,8 +11,10 @@
 
 @class NXCollectionViewDataSource;
 
-typedef void(^NXCollectionViewDataSourcePrepareBlock)(id view, NSIndexPath *indexPath, NXCollectionViewDataSource *dataSource);
-typedef void(^NXCollectionViewDataSourcePostUpdateBlock)(NXCollectionViewDataSource *dataSource);
+typedef void(^NXCollectionViewDataSourcePrepareBlock)(id _Nonnull view, NSIndexPath * _Nonnull indexPath, NXCollectionViewDataSource * _Nonnull dataSource);
+typedef void(^NXCollectionViewDataSourcePostUpdateBlock)(NXCollectionViewDataSource * _Nonnull dataSource);
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface NXCollectionViewDataSource : NSObject <UICollectionViewDataSource>
 
@@ -25,7 +27,7 @@ typedef void(^NXCollectionViewDataSourcePostUpdateBlock)(NXCollectionViewDataSou
  
     @param collectionView The UICollectionView this data source should manage.
  */
-- (id)initWithCollectionView:(UICollectionView *)collectionView;
+- (instancetype)initWithCollectionView:(UICollectionView *)collectionView;
 
 #pragma mark Collection View
 
@@ -105,6 +107,8 @@ typedef void(^NXCollectionViewDataSourcePostUpdateBlock)(NXCollectionViewDataSou
 @property (copy) NXCollectionViewDataSourcePostUpdateBlock postUpdateBlock;
 
 @end
+
+NS_ASSUME_NONNULL_END
 
 // Import Subclasses to have a Framework Header
 

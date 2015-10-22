@@ -12,6 +12,8 @@
 
 @class NXFetchedCollectionViewDataSource;
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface NXFetchedCollectionViewDataSource : NXCollectionViewDataSource
 
 #pragma mark Life-cycle
@@ -26,11 +28,13 @@
 @property (nonatomic, readonly) NSArray *fetchedItems;
 
 #pragma mark Reload
-- (void)reloadWithFetchRequest:(NSFetchRequest *)fetchRequest sectionKeyPath:(NSString *)sectionKeyPath;
-- (void)reloadWithFetchRequest:(NSFetchRequest *)fetchRequest sectionAttributeDescription:(NSAttributeDescription *)attributeDescription;
-- (void)reloadWithFetchRequest:(NSFetchRequest *)fetchRequest sectionRelationshipDescription:(NSRelationshipDescription *)relationshipDescription;
+- (void)reloadWithFetchRequest:(NSFetchRequest * __nullable)fetchRequest sectionKeyPath:(NSString * __nullable)sectionKeyPath;
+- (void)reloadWithFetchRequest:(NSFetchRequest * __nullable)fetchRequest sectionAttributeDescription:(NSAttributeDescription *)attributeDescription;
+- (void)reloadWithFetchRequest:(NSFetchRequest * __nullable)fetchRequest sectionRelationshipDescription:(NSRelationshipDescription *)relationshipDescription;
 
 #pragma mark Relaod Colelction View
 @property (nonatomic, assign) BOOL reloadCollectionViewAfterChanges;
 
 @end
+
+NS_ASSUME_NONNULL_END
